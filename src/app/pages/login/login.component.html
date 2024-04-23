@@ -1,0 +1,29 @@
+
+<h2>Log In</h2>
+<div class="row" *ngIf="!_authService.access">
+  <div class="col-sm-4">
+    <label>Username:</label><br />
+    <input type="email" name="login-email" [(ngModel)]="user.email">
+    <span *ngFor="let error of _authService.errors.email"><br />
+    {{ error }}</span></div>
+  <div class="col-sm-4">
+    <label>Password:</label><br />
+    <input type="password" name="login-password" [(ngModel)]="user.password">
+    <span *ngFor="let error of _authService.errors.password"><br />
+    {{ error }}</span>
+  </div>
+  <div class="col-sm-4">
+    <button (click)="login()" class="btn btn-primary">Log In</button>
+  </div>
+  <div class="col-sm-12">
+    <span *ngFor="let error of _authService.errors.non_field_errors">{{ error }}<br /></span>
+  </div>
+</div>
+<div class="row" *ngIf="_authService.access">
+  <div class="col-sm-12">You are logged in as {{ user.email }}.<br />
+    Token Expires: {{ _authService.expiration }}<br />
+    <button (click)="refreshToken()" class="btn btn-primary">Refresh Token</button>
+    <button (click)="logout()" class="btn btn-primary">Log Out</button>
+  </div>
+</div>
+
