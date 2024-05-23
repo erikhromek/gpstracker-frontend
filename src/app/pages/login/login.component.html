@@ -1,63 +1,69 @@
 <div class="main-div">
-
   <div class="login-container">
-  <img
-    id="logo"
-    mat-card-image
-    src="assets/images/logo.svg"
-    alt="SafeTrack logo"
-  />
-  <mat-card class="login-card">
-    <mat-card-header> <mat-card-title>Ingreso</mat-card-title></mat-card-header>
-    <mat-card-content>
-      <div class="row inputs" *ngIf="!_authService.access">
-          <mat-form-field
-            ><input
+    <img
+      id="logo"
+      mat-card-image
+      src="assets/images/logo.svg"
+      alt="SafeTrack logo"
+    />
+    <mat-card class="login-card">
+      <mat-card-header>
+        <mat-card-title>Ingreso</mat-card-title></mat-card-header
+      >
+      <mat-card-content>
+        <div class="row inputs" *ngIf="!_authService.access">
+          <mat-form-field>
+            <input
               type="email"
+              matInput
               placeholder="Email"
               name="login-email"
               [(ngModel)]="user.email"
-          /></mat-form-field>
-          <span *ngFor="let error of _authService.errors.email"
-            ><br />
-            {{ error }}</span
-          >
-          <mat-form-field
-            ><input
+            />
+          </mat-form-field>
+          <span *ngFor="let error of _authService.errors.email">
+            <br />
+            {{ error }}
+          </span>
+          <mat-form-field>
+            <input
               type="password"
+              matInput
               placeholder="Contraseña"
               name="login-password"
               [(ngModel)]="user.password"
-          /></mat-form-field>
-          <span *ngFor="let error of _authService.errors.password"
-            ><br />
-            {{ error }}</span
-          >
+            />
+          </mat-form-field>
+          <span *ngFor="let error of _authService.errors.password">
+            <br />
+            {{ error }}
+          </span>
 
-        <div class="row center">
-          <button mat-flat-button (click)="login()">Ingresar</button>
+          <div class="row center">
+            <button mat-flat-button (click)="login()">Ingresar</button>
+          </div>
+          <div class="col-sm-12">
+            <span *ngFor="let error of _authService.errors.non_field_errors">
+              {{ error }}
+              <br />
+            </span>
+          </div>
+          <div class="row extra-buttons">
+            <a mat-button (click)="login()">Olvidé mi contraseña</a>
+            <a mat-button (click)="login()">Registro</a>
+          </div>
         </div>
-        <div class="col-sm-12">
-          <span *ngFor="let error of _authService.errors.non_field_errors"
-            >{{ error }}<br
-          /></span>
+        <div class="row" *ngIf="_authService.access">
+          <div class="col-sm-12">
+            You are logged in as {{ user.email }}.<br />
+            Token Expires: {{ _authService.expiration }}<br />
+            <button (click)="refreshToken()" class="btn btn-primary">
+              Refresh Token
+            </button>
+            <button (click)="logout()" class="btn btn-primary">Log Out</button>
+          </div>
         </div>
-        <div class="row extra-buttons">
-          <a mat-button (click)="login()">Olvidé mi contraseña</a>
-          <a mat-button (click)="login()">Registro</a>
-        </div>
-      </div>
-      <div class="row" *ngIf="_authService.access">
-        <div class="col-sm-12">
-          You are logged in as {{ user.email }}.<br />
-          Token Expires: {{ _authService.expiration }}<br />
-          <button (click)="refreshToken()" class="btn btn-primary">
-            Refresh Token
-          </button>
-          <button (click)="logout()" class="btn btn-primary">Log Out</button>
-        </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
-</div>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </div>
