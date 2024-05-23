@@ -1,0 +1,14 @@
+
+@use '@angular/material' as mat;
+
+
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+// Define your theme with color palettes, typography and density
+
+
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

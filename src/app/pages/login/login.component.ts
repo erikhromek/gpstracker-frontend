@@ -1,15 +1,18 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from "@angular/material/form-field";
 
 @Component({
   selector: 'app-login',
   standalone: true,
   providers: [AuthService],
-  imports: [FormsModule, BrowserModule],
+  imports: [FormsModule, CommonModule, HttpClientModule, MatCardModule, MatFormFieldModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrl: './login.component.scss'
 })
 export class LoginComponent {
   /**
