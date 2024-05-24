@@ -40,7 +40,7 @@
           </span>
 
           <div class="row center">
-            <button mat-flat-button (click)="login()">Ingresar</button>
+            <button mat-flat-button color="primary" (click)="login()">Ingresar</button>
           </div>
           <div class="col-sm-12">
             <span *ngFor="let error of _authService.errors.non_field_errors">
@@ -50,7 +50,7 @@
           </div>
           <div class="row extra-buttons">
             <a mat-button (click)="login()">Olvidé mi contraseña</a>
-            <a mat-button (click)="login()">Registro</a>
+            <a mat-button [routerLink]="['/register']">Registro</a>
           </div>
         </div>
         <div class="row" *ngIf="_authService.access">
