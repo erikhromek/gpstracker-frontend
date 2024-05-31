@@ -1,45 +1,39 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { AuthUser } from '../models/auth_user';
+import { AuthUser } from '../models/auth-user';
 import { environment } from '../../environments/environment';
-import { AuthToken } from '../models/auth_token';
+import { AuthToken } from '../models/auth-token';
+import { tap } from 'rxjs';
 
 @Injectable()
 export class AuthService {
   apiUrl = `${environment.apiUrl}/api`;
 
-  // http options used for making API calls
-  httpOptions: any;
-
-  public access?: string;
-  refresh?: string;
+  authToken?:
 
   // the token expiration date
-  public expiration?: Date;
+  expiration?: Date;
 
   // error messages received from the login attempt
-  public errors: any = [];
+  errors: any = [];
 
   constructor(private httpClient: HttpClient) {
-    this.httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-    };
   }
 
-  public login(user: AuthUser) {
+  login(user: AuthUser) {
     this.httpClient
       .post<AuthToken>(`${this.apiUrl}/token/`, user)
-      .subscribe({next: (v) => this.updateData(v), error: (e) => this.errors = e['detail']});
+      .pipe(tap( (authToken: AuthToken => {this.authToken = authToken} )));
   }
 
   // Refreshes the JWT token, to extend the time the user is logged in
-  public refreshToken() {
+  refreshToken() {
     this.httpClient
       .post<AuthToken>(`${this.apiUrl}/token/`, this.refresh)
       .subscribe({next: (v) => this.updateData(v), error: (e) => this.errors = e['detail']});
   }
 
-  public logout() {
+  logout() {
     this.access = undefined;
     this.refresh = undefined;
     this.expiration = undefined;

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { MatCardModule } from '@angular/material/card';
@@ -8,6 +8,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { RouterLink } from '@angular/router';
+import { AuthUser } from '../../models/auth-user';
+import { validateVerticalPosition } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-login',
@@ -22,37 +24,34 @@ import { RouterLink } from '@angular/router';
     MatButtonModule,
     MatInputModule,
     RouterLink,
+    ReactiveFormsModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
 export class LoginComponent {
-  /**
-   * An object representing the user for the login form
-   */
-  protected user: any;
 
-  constructor(protected _authService: AuthService) {}
+  loginForm = this.fb.group({email: ['', Validators.email], password: ['', Validators.required]});
+
+  constructor(protected _authService: AuthService, private fb: FormBuilder) {
+  }
 
   ngOnInit() {
-    this.user = {
-      email: '',
-      password: '',
-    };
+
   }
 
-  login() {
-    this._authService.login({
-      email: this.user.email,
-      password: this.user.password,
-    });
+  get email()  {
+    return this.loginForm.get("email");
   }
 
-  refreshToken() {
-    this._authService.refreshToken();
+  get password() {
+    return this.loginForm.get("password");
   }
 
-  logout() {
-    this._authService.logout();
+  submit(): void {
+    if (this.loginForm.valid) {
+      // TODO
+    }
   }
+
 }

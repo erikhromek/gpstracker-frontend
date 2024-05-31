@@ -1,0 +1,65 @@
+<div class="main-div">
+  <div class="top-container">
+    <div class="left">
+      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Menú">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item disabled>
+          <span>Mapa</span>
+        </button>
+        <button mat-menu-item>
+          <span>Beneficiarios</span>
+        </button>
+        <button mat-menu-item>
+          <span>Alertas</span>
+        </button>
+        <button mat-menu-item>
+          <span>Tipos</span>
+        </button>
+        <button mat-menu-item>
+          <span>Usuarios</span>
+        </button>
+      </mat-menu>
+    </div>
+    <div class="logo">
+      <img
+        id="logo"
+        mat-card-image
+        ngSrc="assets/images/logo.png"
+        priority
+        height="100"
+        width="100"
+        alt="SafeTrack logo"
+      />
+    </div>
+
+    <div class="right">
+      <a mat-button [routerLink]="['/']">Perfil</a>
+      <a mat-button [routerLink]="['/']">Salir</a>
+    </div>
+  </div>
+  
+  <div class="mid-container">
+    <div class="alerts-container">
+        <mat-list role="list">
+            <div mat-subheader>Últimas alertas</div>
+            <mat-divider></mat-divider>
+            <mat-list-item role="listitem">Item 1</mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item role="listitem">Item 2</mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item role="listitem">Item 3</mat-list-item>
+            <mat-divider></mat-divider>
+          </mat-list>
+          
+
+    </div>
+
+  <div class="map-container">
+    <div class="map-frame">
+      <div id="map"></div>
+    </div>
+  </div>
+  </div>
+</div>
