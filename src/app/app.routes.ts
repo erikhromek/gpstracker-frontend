@@ -10,11 +10,14 @@ export const routes: Routes = [
       import('./components/layout/layout.component').then(
         (m) => m.LayoutComponent
       ),
-      children: [{path: "", pathMatch: "full", redirectTo: "map"}, {
+    children: [
+      { path: '', pathMatch: 'full', redirectTo: 'map' },
+      {
         path: 'map',
         loadComponent: () =>
           import('./pages/map/map.component').then((m) => m.MapComponent),
-      }],
+      },
+    ],
   },
   {
     path: 'login',
@@ -34,15 +37,6 @@ export const routes: Routes = [
       import('./pages/reset-password/reset-password.component').then(
         (m) => m.ResetPasswordComponent
       ),
-
   },
-  // {
-  //   path: 'map',
-  //   canLoad: [authGuard],
-  //   canActivate: [authGuard],
-  //   loadComponent: () =>
-  //     import('./pages/map/map.component').then((m) => m.MapComponent),
-  // },
-  // { path: '', redirectTo: 'map', pathMatch: 'full' },
   { path: '**', redirectTo: 'map' },
 ];

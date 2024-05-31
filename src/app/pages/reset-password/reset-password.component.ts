@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
@@ -23,10 +23,10 @@ import { RouterLink } from '@angular/router';
     RouterLink,
   ],
   templateUrl: './reset-password.component.html',
-  styleUrl: './reset-password.component.scss'
+  styleUrl: './reset-password.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResetPasswordComponent {
-  
   protected user: any;
 
   constructor(protected _authService: AuthService) {}
@@ -37,7 +37,5 @@ export class ResetPasswordComponent {
     };
   }
 
-  resetPassword() {
-  }
-
+  resetPassword() {}
 }

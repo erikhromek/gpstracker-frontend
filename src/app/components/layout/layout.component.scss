@@ -1,0 +1,39 @@
+.main-div {
+  height: 100vh;
+  display: flex;
+  background-color: azure;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0px 20px;
+}
+
+.top-container {
+  display: flex;
+  align-self: stretch;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.mat-icon {
+  transform: scale(2);
+  margin-left: 20px;
+}
+
+.left {
+  align-self: center;
+}
+
+.right {
+  align-self: center;
+}
+
+#logo {
+  margin: 10px 10px 10px 40px;
+}
+
+.mid-container {
+  display: flex;
+  align-self: stretch;
+  margin-bottom: 20px;
+  flex: 1;
+}

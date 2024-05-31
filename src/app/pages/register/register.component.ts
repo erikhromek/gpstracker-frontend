@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -23,28 +23,27 @@ import { RouterLink } from '@angular/router';
     RouterLink,
   ],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.scss'
+  styleUrl: './register.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegisterComponent {
-    /**
+  /**
    * An object representing the user for the register form
    */
-    protected user: any;
+  protected user: any;
 
-    constructor(protected _authService: AuthService) {}
+  constructor(protected _authService: AuthService) {}
 
-    ngOnInit() {
-      this.user = {
-        email: '',
-        password: '',
-        password2: '',
-        organization: '',
-        name: '',
-        lastname: '',
-      };
-    }
+  ngOnInit() {
+    this.user = {
+      email: '',
+      password: '',
+      password2: '',
+      organization: '',
+      name: '',
+      lastname: '',
+    };
+  }
 
-    register() {
-      
-    }
+  register() {}
 }

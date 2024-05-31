@@ -1,2 +1,46 @@
-<router-outlet>
-</router-outlet>
+<div class="main-div">
+  <div class="top-container">
+    <div class="left">
+      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Menú">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item disabled>
+          <span>Mapa</span>
+        </button>
+        <button mat-menu-item>
+          <span>Beneficiarios</span>
+        </button>
+        <button mat-menu-item>
+          <span>Alertas</span>
+        </button>
+        <button mat-menu-item>
+          <span>Tipos</span>
+        </button>
+        <button mat-menu-item>
+          <span>Usuarios</span>
+        </button>
+      </mat-menu>
+    </div>
+    <div class="logo">
+      <img
+        id="logo"
+        mat-card-image
+        ngSrc="assets/images/logo.png"
+        priority
+        height="100"
+        width="100"
+        alt="SafeTrack logo"
+      />
+    </div>
+
+    <div class="right">
+      <a mat-button [routerLink]="['/']">Perfil</a>
+      <a mat-button [routerLink]="['/']">Salir</a>
+    </div>
+  </div>
+
+  <div class="mid-container">
+    <router-outlet> </router-outlet>
+  </div>
+</div>
