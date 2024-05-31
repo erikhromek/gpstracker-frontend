@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import {
   FormBuilder,
@@ -14,7 +14,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthUser } from '../../models/auth-user';
-import { validateVerticalPosition } from '@angular/cdk/overlay';
 import { EMPTY, catchError } from 'rxjs';
 
 @Component({
@@ -33,6 +32,7 @@ import { EMPTY, catchError } from 'rxjs';
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
   loginForm = this.fb.group({
@@ -40,7 +40,12 @@ export class LoginComponent {
     password: ['', Validators.required],
   });
 
-  constructor(protected _authService: AuthService, private fb: FormBuilder, private router: Router, private route: ActivatedRoute) {}
+  constructor(
+    protected _authService: AuthService,
+    private fb: FormBuilder,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
     this.checkSession();
@@ -55,20 +60,24 @@ export class LoginComponent {
   }
 
   checkSession(): void {
-    this._authService.isLoggedIn()? this.router.navigateByUrl("/map") : false;
+    this._authService.isLoggedIn() ? this.router.navigateByUrl('/map') : false;
   }
 
   submit(): void {
     if (this.loginForm.valid) {
-      this._authService.login(this.loginForm.value as AuthUser).pipe(catchError((error) => {
-        console.log(error);
-        return EMPTY;
-      })).subscribe(() => {
-        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || "/map";
-        this.router.navigateByUrl(returnUrl);
-      });
-
-
+      this._authService
+        .login(this.loginForm.value as AuthUser)
+        .pipe(
+          catchError((error) => {
+            console.log(error);
+            return EMPTY;
+          })
+        )
+        .subscribe(() => {
+          const returnUrl =
+            this.route.snapshot.queryParams['returnUrl'] || '/map';
+          this.router.navigateByUrl(returnUrl);
+        });
     }
   }
 }
