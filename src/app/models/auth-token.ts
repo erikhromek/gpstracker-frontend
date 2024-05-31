@@ -1,5 +1,4 @@
 export interface AuthToken {
-    access: string;
-    refresh: string;
-
+  access: string;
+  refresh: string;
 }

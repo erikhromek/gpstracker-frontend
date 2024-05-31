@@ -11,57 +11,53 @@
         <mat-card-title>Ingreso</mat-card-title></mat-card-header
       >
       <mat-card-content>
-        <div class="row inputs" *ngIf="!_authService.access">
-          <mat-form-field>
-            <input
-              type="email"
-              matInput
-              placeholder="Email"
-              name="login-email"
-              [(ngModel)]="user.email"
-            />
-          </mat-form-field>
-          <span *ngFor="let error of _authService.errors.email">
-            <br />
-            {{ error }}
-          </span>
-          <mat-form-field>
-            <input
-              type="password"
-              matInput
-              placeholder="Contraseña"
-              name="login-password"
-              [(ngModel)]="user.password"
-            />
-          </mat-form-field>
-          <span *ngFor="let error of _authService.errors.password">
-            <br />
-            {{ error }}
-          </span>
+        <div class="row inputs">
+          <form class="loginForm" [formGroup]="loginForm" (ngSubmit)="submit()">
+            <mat-form-field>
+              <input
+                type="email"
+                matInput
+                placeholder="Email"
+                name="login-email"
+                formControlName="email"
+              />
+            <mat-error *ngIf="email?.invalid && (email?.dirty || email?.touched)">
+              <ng-container *ngIf="email?.errors?.['required']">Completar email</ng-container>
+              <ng-container *ngIf="email?.errors?.['email']">Formato inválido</ng-container> 
+            </mat-error>
+            
+            </mat-form-field>
+            <mat-form-field>
+              <input
+                type="password"
+                matInput
+                placeholder="Contraseña"
+                name="login-password"
+                formControlName="password"
+              />
 
-          <div class="row center">
-            <button mat-flat-button color="primary" (click)="login()">Ingresar</button>
-          </div>
-          <div class="col-sm-12">
-            <span *ngFor="let error of _authService.errors.non_field_errors">
-              {{ error }}
-              <br />
-            </span>
-          </div>
-          <div class="row extra-buttons">
-            <a mat-button [routerLink]="['/reset-password']">Olvidé mi contraseña</a>
-            <a mat-button [routerLink]="['/register']">Registro</a>
-          </div>
+              <mat-error *ngIf="password?.invalid && (password?.dirty || password?.touched)">
+                <ng-container *ngIf="password?.errors?.['required']">Completar contraseña</ng-container>
+              </mat-error>
+            </mat-form-field>
+
+            <div class="row center">
+              <button
+                mat-flat-button
+                color="primary"
+                type="submit"
+                [disabled]="!loginForm.valid"
+              >
+                Ingresar
+              </button>
+            </div>
+          </form>
         </div>
-        <div class="row" *ngIf="_authService.access">
-          <div class="col-sm-12">
-            You are logged in as {{ user.email }}.<br />
-            Token Expires: {{ _authService.expiration }}<br />
-            <button (click)="refreshToken()" class="btn btn-primary">
-              Refresh Token
-            </button>
-            <button (click)="logout()" class="btn btn-primary">Log Out</button>
-          </div>
+        <div class="row extra-buttons">
+          <a mat-button [routerLink]="['/reset-password']"
+            >Olvidé mi contraseña</a
+          >
+          <a mat-button [routerLink]="['/register']">Registro</a>
         </div>
       </mat-card-content>
     </mat-card>

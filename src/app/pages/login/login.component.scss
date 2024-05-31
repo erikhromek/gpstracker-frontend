@@ -5,6 +5,11 @@
     background-color: azure;
   }
 
+  .loginForm {
+    display: flex;
+    flex-direction: column;
+  }
+
 .login-card {
     padding: 0 40px;
 }
