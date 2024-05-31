@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { AuthUser } from '../models/auth-user';
 import { environment } from '../../environments/environment';
 import { AuthToken } from '../models/auth-token';
 import { Observable, tap } from 'rxjs';
 
-@Injectable()
+@Injectable({providedIn: "root"})
 export class AuthService {
+
   apiUrl = `${environment.apiUrl}/api`;
 
   constructor(private httpClient: HttpClient) {}
@@ -22,7 +23,6 @@ export class AuthService {
   private setSession(authToken: AuthToken): void {
     localStorage.setItem('access', authToken.access);
     localStorage.setItem('refresh', authToken.refresh);
-
   }
  
   isLoggedIn(): boolean {

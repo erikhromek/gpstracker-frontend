@@ -12,7 +12,6 @@ import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  providers: [AuthService],
   imports: [
     FormsModule,
     CommonModule,

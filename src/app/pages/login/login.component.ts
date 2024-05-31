@@ -20,7 +20,6 @@ import { EMPTY, catchError } from 'rxjs';
 @Component({
   selector: 'app-login',
   standalone: true,
-  providers: [AuthService],
   imports: [
     FormsModule,
     CommonModule,
