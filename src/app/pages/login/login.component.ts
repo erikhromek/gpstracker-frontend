@@ -15,6 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthUser } from '../../models/auth-user';
 import { EMPTY, catchError } from 'rxjs';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-login',
@@ -29,6 +30,7 @@ import { EMPTY, catchError } from 'rxjs';
     MatInputModule,
     RouterLink,
     ReactiveFormsModule,
+    NgOptimizedImage,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
@@ -41,7 +43,7 @@ export class LoginComponent {
   });
 
   constructor(
-    protected _authService: AuthService,
+    private authService: AuthService,
     private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute
@@ -60,12 +62,12 @@ export class LoginComponent {
   }
 
   checkSession(): void {
-    this._authService.isLoggedIn() ? this.router.navigateByUrl('/map') : false;
+    this.authService.isLoggedIn() ? this.router.navigateByUrl('/map') : false;
   }
 
   submit(): void {
     if (this.loginForm.valid) {
-      this._authService
+      this.authService
         .login(this.loginForm.value as AuthUser)
         .pipe(
           catchError((error) => {

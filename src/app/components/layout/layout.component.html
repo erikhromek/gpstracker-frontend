@@ -25,7 +25,6 @@
     <div class="logo">
       <img
         id="logo"
-        mat-card-image
         ngSrc="assets/images/logo.png"
         priority
         height="100"
@@ -36,7 +35,7 @@
 
     <div class="right">
       <a mat-button [routerLink]="['/']">Perfil</a>
-      <a mat-button [routerLink]="['/']">Salir</a>
+      <a mat-button (click)="logout()">Salir</a>
     </div>
   </div>
 

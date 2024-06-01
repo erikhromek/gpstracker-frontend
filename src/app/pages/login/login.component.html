@@ -2,8 +2,10 @@
   <div class="login-container">
     <img
       id="logo"
-      mat-card-image
-      src="assets/images/logo.png"
+      ngSrc="assets/images/logo.png"
+      priority
+      height="200"
+      width="200"
       alt="SafeTrack logo"
     />
     <mat-card class="login-card">
@@ -21,11 +23,16 @@
                 name="login-email"
                 formControlName="email"
               />
-            <mat-error *ngIf="email?.invalid && (email?.dirty || email?.touched)">
-              <ng-container *ngIf="email?.errors?.['required']">Completar email</ng-container>
-              <ng-container *ngIf="email?.errors?.['email']">Formato inválido</ng-container> 
-            </mat-error>
-            
+              <mat-error
+                *ngIf="email?.invalid && (email?.dirty || email?.touched)"
+              >
+                <ng-container *ngIf="email?.errors?.['required']"
+                  >Completar email</ng-container
+                >
+                <ng-container *ngIf="email?.errors?.['email']"
+                  >Formato inválido</ng-container
+                >
+              </mat-error>
             </mat-form-field>
             <mat-form-field>
               <input
@@ -36,8 +43,14 @@
                 formControlName="password"
               />
 
-              <mat-error *ngIf="password?.invalid && (password?.dirty || password?.touched)">
-                <ng-container *ngIf="password?.errors?.['required']">Completar contraseña</ng-container>
+              <mat-error
+                *ngIf="
+                  password?.invalid && (password?.dirty || password?.touched)
+                "
+              >
+                <ng-container *ngIf="password?.errors?.['required']"
+                  >Completar contraseña</ng-container
+                >
               </mat-error>
             </mat-form-field>
 

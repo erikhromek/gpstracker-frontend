@@ -12,6 +12,7 @@
   align-self: stretch;
   flex-direction: row;
   justify-content: space-between;
+  padding: 10px 0px 10px 0px;
 }
 
 .mat-icon {
@@ -21,14 +22,20 @@
 
 .left {
   align-self: center;
+  flex: 1;
 }
 
 .right {
   align-self: center;
+  flex: 1;
+  justify-content: flex-end;
+  display: flex;
 }
 
-#logo {
-  margin: 10px 10px 10px 40px;
+.logo {
+  display: flex;
+  justify-content: center;
+  flex: 1;
 }
 
 .mid-container {
