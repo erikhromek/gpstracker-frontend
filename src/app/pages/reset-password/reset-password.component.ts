@@ -27,15 +27,9 @@ import { RouterLink } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResetPasswordComponent {
-  protected user: any;
+  constructor(private authService: AuthService) {}
 
-  constructor(protected _authService: AuthService) {}
+  ngOnInit() {}
 
-  ngOnInit() {
-    this.user = {
-      email: '',
-    };
-  }
-
-  resetPassword() {}
+  submit() {}
 }

@@ -27,23 +27,9 @@ import { RouterLink } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegisterComponent {
-  /**
-   * An object representing the user for the register form
-   */
-  protected user: any;
+  constructor(private authService: AuthService) {}
 
-  constructor(protected _authService: AuthService) {}
+  ngOnInit() {}
 
-  ngOnInit() {
-    this.user = {
-      email: '',
-      password: '',
-      password2: '',
-      organization: '',
-      name: '',
-      lastname: '',
-    };
-  }
-
-  register() {}
+  submit() {}
 }
