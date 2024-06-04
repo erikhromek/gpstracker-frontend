@@ -8,9 +8,9 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
   let isRefreshing = false;
   const router = inject(Router);
   const authService = inject(AuthService);
-  const accessToken = authService.getAccessToken();
+  // const accessToken = authService.getAccessToken();
   const requestCloned = request.clone({
-    headers: request.headers.set('Authorization', 'Bearer ' + accessToken),
+    headers: request.headers.set('Authorization', 'Bearer ' + authService.getAccessToken()),
   });
 
   return next(requestCloned).pipe(
@@ -23,7 +23,9 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
             return authService.refreshToken().pipe(
               switchMap(() => {
                 isRefreshing = false;
-                return next(request);
+                return next(request.clone({
+                  headers: request.headers.set('Authorization', 'Bearer ' + authService.getAccessToken()),
+                }));
               }),
               catchError((error) => {
                 isRefreshing = false;
@@ -38,7 +40,9 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
           }
         }
 
-        return next(request);
+        return next(request.clone({
+          headers: request.headers.set('Authorization', 'Bearer ' + authService.getAccessToken()),
+        }));
       }
 
       return throwError(() => error);

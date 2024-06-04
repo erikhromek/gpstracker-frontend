@@ -2,6 +2,9 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AfterViewInit } from '@angular/core';
 import * as L from 'leaflet';
 import { MatListModule } from '@angular/material/list';
+import { environment } from '../../../environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-map',
@@ -12,6 +15,7 @@ import { MatListModule } from '@angular/material/list';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapComponent implements AfterViewInit {
+  apiUrl = `${environment.apiUrl}`;
   private map!: L.Map;
 
   private initMap(): void {
@@ -33,9 +37,20 @@ export class MapComponent implements AfterViewInit {
     tiles.addTo(this.map);
   }
 
-  constructor() {}
+  constructor(private httpClient: HttpClient) {}
+
+  private tryGet(): void {
+    this.httpClient
+    .get<any[]>(`${this.apiUrl}/alerts-summary/`)
+    .subscribe(
+      (data: any[]) => {
+        console.log("ok");
+      }
+    );
+  }
 
   ngAfterViewInit(): void {
     this.initMap();
+    this.tryGet();
   }
 }

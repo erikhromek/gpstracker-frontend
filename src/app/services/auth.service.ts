@@ -13,7 +13,7 @@ export class AuthService {
   constructor(private httpClient: HttpClient) {}
 
   login(user: AuthUser): Observable<AuthToken> {
-    return this.httpClient.post<AuthToken>(`${this.apiUrl}/token`, user).pipe(
+    return this.httpClient.post<AuthToken>(`${this.apiUrl}/token/`, user).pipe(
       tap((authToken: AuthToken) => {
         this.setSession(authToken);
       })
@@ -36,8 +36,8 @@ export class AuthService {
 
   refreshToken(): Observable<AuthToken> {
     return this.httpClient
-      .post<AuthToken>(`${this.apiUrl}/refresh`, {
-        refresh: this.getAccessToken(),
+      .post<AuthToken>(`${this.apiUrl}/token/refresh/`, {
+        refresh: this.getRefreshToken(),
       })
       .pipe(
         tap((authToken: AuthToken) => {
@@ -46,7 +46,11 @@ export class AuthService {
       );
   }
 
-  getAccessToken(): string | null {
+  getRefreshToken(): string | null {
+    return localStorage.getItem('refresh');
+  }
+
+  public getAccessToken(): string | null {
     return localStorage.getItem('access');
   }
 }
