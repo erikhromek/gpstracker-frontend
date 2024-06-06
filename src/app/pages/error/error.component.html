@@ -1,0 +1,9 @@
+@if(error$ | async; as error){
+<div>
+  {{ error.status }}
+</div>
+<div>
+  {{ error.error }}
+</div>
+<button [routerLink]="['/map']">Volver al mapa</button>
+}

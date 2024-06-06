@@ -1,18 +1,27 @@
+@if(alerts$ | async; as alerts){
 <div class="alerts-container">
   <mat-list role="list">
     <div mat-subheader>Últimas alertas</div>
     <mat-divider></mat-divider>
-    <mat-list-item role="listitem">Item 1</mat-list-item>
+
+    @for (alert of alerts; track alert.id; let e = $even) {
+    <mat-list-item role="listitem">{{ alert.datetime | date }}</mat-list-item>
+    @if(e){
     <mat-divider></mat-divider>
-    <mat-list-item role="listitem">Item 2</mat-list-item>
-    <mat-divider></mat-divider>
-    <mat-list-item role="listitem">Item 3</mat-list-item>
-    <mat-divider></mat-divider>
+    } }@empty {
+    <mat-list-item role="listitem">No hay alertas</mat-list-item>
+    }
   </mat-list>
 </div>
 
 <div class="map-container">
   <div class="map-frame">
-    <div id="map"></div>
+    <div
+      id="map"
+      leaflet
+      [leafletOptions]="options"
+      [leafletLayers]="layers"
+    ></div>
   </div>
 </div>
+}
