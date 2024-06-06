@@ -38,5 +38,10 @@ export const routes: Routes = [
         (m) => m.ResetPasswordComponent
       ),
   },
-  { path: '**', redirectTo: 'map' },
+  {
+    path: 'error/:code',
+    loadComponent: () =>
+      import('./pages/error/error.component').then((m) => m.ErrorComponent),
+  },
+  { path: '**', redirectTo: '/error/404' },
 ];

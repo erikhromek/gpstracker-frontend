@@ -44,6 +44,7 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
           return throwError(() => error);
         }
       } else {
+        router.navigate(['/error/' + error.status]);
         return throwError(() => error);
       }
     })
