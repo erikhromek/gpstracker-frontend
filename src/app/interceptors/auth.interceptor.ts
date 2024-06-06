@@ -3,6 +3,7 @@ import {
   HttpHandlerFn,
   HttpInterceptorFn,
   HttpRequest,
+  HttpResponse,
 } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
@@ -11,12 +12,15 @@ import {
   Observable,
   catchError,
   filter,
+  map,
   switchMap,
   take,
   throwError,
 } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { AuthToken } from '../models/auth-token';
+import snakecaseKeys from 'snakecase-keys';
+import camelcaseKeys from 'camelcase-keys';
 
 export const authInterceptor: HttpInterceptorFn = (request, next) => {
   let isRefreshing = false;
@@ -28,6 +32,13 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
   const requestCloned = addHeaders(request, authService.getAccessToken());
 
   return next(requestCloned).pipe(
+    map((response) => {
+      if (response instanceof HttpResponse) {
+        return response.clone({ body: camelcaseKeys(request.body as {}) });
+      } else {
+        return response;
+      }
+    }),
     catchError((error) => {
       if (error.status == 401) {
         if (authService.isLoggedIn()) {
@@ -56,6 +67,7 @@ function addHeaders(
   token: string | null
 ): HttpRequest<unknown> {
   return request.clone({
+    body: snakecaseKeys(request.body as {}),
     setHeaders: {
       Authorization: `Bearer ${token}`,
     },
