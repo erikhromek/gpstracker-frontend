@@ -9,12 +9,23 @@
       alt="SafeTrack logo"
     />
     <mat-card class="login-card">
-      <mat-card-header>
-        <mat-card-title>Ingreso</mat-card-title></mat-card-header
-      >
+      <mat-card-header class="card-header">
+        <mat-card-title> Ingreso </mat-card-title>
+      </mat-card-header>
       <mat-card-content>
         <div class="row inputs">
-          <form class="loginForm" [formGroup]="loginForm" (ngSubmit)="submit()">
+          @if(errorMessages$ | async; as errorMessages){ @if
+          (errorMessages?.['detail']) {}
+          <div class="server-error">
+            {{ errorMessages?.['detail'] }}
+          </div>
+          }
+
+          <form
+            class="login-form"
+            [formGroup]="loginForm"
+            (ngSubmit)="submit()"
+          >
             <mat-form-field>
               <input
                 type="email"
@@ -23,16 +34,16 @@
                 name="login-email"
                 formControlName="email"
               />
-              <mat-error
-                *ngIf="email?.invalid && (email?.dirty || email?.touched)"
-              >
-                <ng-container *ngIf="email?.errors?.['required']"
-                  >Completar email</ng-container
-                >
-                <ng-container *ngIf="email?.errors?.['email']"
-                  >Formato inválido</ng-container
-                >
+              @if(email?.invalid && (email?.dirty || email?.touched)){
+              <mat-error>
+                @if(email?.errors?.['required']){ Completar email }
+                @if(email?.errors?.['email']){ Formato inválido }
+                @if(email?.errors?.['serverError']){ @for(message of
+                email?.errors?.['serverError']; track message){
+                {{ message }}
+                } }
               </mat-error>
+              }
             </mat-form-field>
             <mat-form-field>
               <input
@@ -43,15 +54,15 @@
                 formControlName="password"
               />
 
-              <mat-error
-                *ngIf="
-                  password?.invalid && (password?.dirty || password?.touched)
-                "
-              >
-                <ng-container *ngIf="password?.errors?.['required']"
-                  >Completar contraseña</ng-container
-                >
+              @if(password?.invalid && (password?.dirty || password?.touched)){
+              <mat-error>
+                @if(password?.errors?.['required']){ Completar contraseña }
+                @if(password?.errors?.['serverError']){ @for(message of
+                password?.errors?.['serverError']; track message){
+                {{ message }}
+                } }
               </mat-error>
+              }
             </mat-form-field>
 
             <div class="row center">

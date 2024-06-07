@@ -3,6 +3,7 @@ import {
   HttpHandlerFn,
   HttpInterceptorFn,
   HttpRequest,
+  HttpResponse,
 } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
@@ -11,12 +12,16 @@ import {
   Observable,
   catchError,
   filter,
+  map,
   switchMap,
   take,
+  tap,
   throwError,
 } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { AuthToken } from '../models/auth-token';
+import snakecaseKeys from 'snakecase-keys';
+import camelcaseKeys from 'camelcase-keys';
 
 export const authInterceptor: HttpInterceptorFn = (request, next) => {
   let isRefreshing = false;
@@ -28,6 +33,13 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
   const requestCloned = addHeaders(request, authService.getAccessToken());
 
   return next(requestCloned).pipe(
+    map((response) => {
+      if (response instanceof HttpResponse && response.body) {
+        return response.clone({ body: camelcaseKeys(response.body as {}) });
+      } else {
+        return response;
+      }
+    }),
     catchError((error) => {
       if (error.status == 401) {
         if (authService.isLoggedIn()) {
@@ -56,6 +68,7 @@ function addHeaders(
   token: string | null
 ): HttpRequest<unknown> {
   return request.clone({
+    body: request.body ? snakecaseKeys(request.body as {}) : request.body,
     setHeaders: {
       Authorization: `Bearer ${token}`,
     },
@@ -97,7 +110,9 @@ function handleError401(
 }
 
 function redirectToLogin(router: Router): void {
-  router.navigate(['/login'], {
-    queryParams: { returnUrl: router.routerState.snapshot.url },
-  });
+  if (!router.url.includes('/login')) {
+    router.navigate(['/login'], {
+      queryParams: { returnUrl: router.routerState.snapshot.url },
+    });
+  }
 }
