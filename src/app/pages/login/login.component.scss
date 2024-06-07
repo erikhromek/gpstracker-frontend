@@ -5,23 +5,20 @@
   background-color: azure;
 }
 
-.loginForm {
+.login-form {
   display: flex;
   flex-direction: column;
+  gap: 10px;
 }
 
 .login-card {
   padding: 0 40px;
 }
 
-div.inputs {
+.inputs {
   display: flex;
   flex-direction: column;
   justify-content: center;
-}
-
-mat-form-field {
-  align-items: center;
 }
 
 #logo {
@@ -34,7 +31,7 @@ mat-form-field {
   align-items: center;
 }
 
-mat-card-header {
+.card-header {
   justify-content: center;
 }
 
@@ -46,4 +43,10 @@ mat-card-header {
 .extra-buttons {
   display: flex;
   justify-content: space-between;
+}
+
+.server-error {
+  color: red;
+  font-size: 0.875em;
+  margin: 0.25em;
 }

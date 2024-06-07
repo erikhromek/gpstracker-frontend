@@ -7,14 +7,15 @@ import {
   Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthUser } from '../../models/auth-user';
-import { EMPTY, catchError } from 'rxjs';
+import { ServerError } from '../../models/server-error';
+import { BehaviorSubject, EMPTY, catchError } from 'rxjs';
 import { NgOptimizedImage } from '@angular/common';
 
 @Component({
@@ -38,9 +39,10 @@ import { NgOptimizedImage } from '@angular/common';
 })
 export class LoginComponent {
   loginForm = this.fb.group({
-    email: ['', Validators.email],
+    email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
   });
+  errorMessages$ = new BehaviorSubject<ServerError>({});
 
   constructor(
     private authService: AuthService,
@@ -67,11 +69,12 @@ export class LoginComponent {
 
   submit(): void {
     if (this.loginForm.valid) {
+      this.errorMessages$.next({});
       this.authService
         .login(this.loginForm.value as AuthUser)
         .pipe(
-          catchError((error) => {
-            console.log(error);
+          catchError((error: HttpErrorResponse) => {
+            this.handleErrors(error);
             return EMPTY;
           })
         )
@@ -80,6 +83,24 @@ export class LoginComponent {
             this.route.snapshot.queryParams['returnUrl'] || '/map';
           this.router.navigateByUrl(returnUrl);
         });
+    }
+  }
+
+  handleErrors(error: HttpErrorResponse): void {
+    this.loginForm.setErrors({ invalid: true });
+    if (error.error) {
+      this.errorMessages$.next(error.error as ServerError);
+
+      Object.keys(this.errorMessages$).forEach((key) => {
+        const control = this.loginForm.get(key);
+        if (control) {
+          control.setErrors({ serverError: this.errorMessages$.value[key] });
+          control.markAsTouched();
+          control.markAsDirty();
+        }
+      });
+    } else {
+      this.errorMessages$.next({ detail: 'An unexpected error occurred' });
     }
   }
 }
