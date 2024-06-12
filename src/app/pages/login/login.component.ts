@@ -91,7 +91,7 @@ export class LoginComponent {
     if (error.error) {
       this.errorMessages$.next(error.error as ServerError);
 
-      Object.keys(this.errorMessages$).forEach((key) => {
+      Object.keys(this.errorMessages$.value).forEach((key) => {
         const control = this.loginForm.get(key);
         if (control) {
           control.setErrors({ serverError: this.errorMessages$.value[key] });
@@ -100,7 +100,7 @@ export class LoginComponent {
         }
       });
     } else {
-      this.errorMessages$.next({ detail: 'An unexpected error occurred' });
+      this.errorMessages$.next({ detail: 'Ha ocurrido un error inesperado' });
     }
   }
 }

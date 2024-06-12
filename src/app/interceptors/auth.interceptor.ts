@@ -55,6 +55,8 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
           redirectToLogin(router);
           return throwError(() => error);
         }
+      } else if (error.status == 400) {
+        return throwError(() => error);
       } else {
         router.navigate(['/error/' + error.status]);
         return throwError(() => error);

@@ -1,0 +1,175 @@
+<div class="main-div">
+    <div class="register-container">
+      <img
+        id="logo"
+        ngSrc="assets/images/logo.png"
+        priority
+        height="200"
+        width="200"
+        alt="SafeTrack logo"
+      />
+      <mat-card class="register-card">
+        <mat-card-header class="card-header">
+          <mat-card-title> Registro </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="row inputs">
+            @if(errorMessages$ | async; as errorMessages){ @if
+            (errorMessages?.['detail']) {}
+            <div class="server-error">
+              {{ errorMessages?.['detail'] }}
+            </div>
+            }
+            <form
+              class="register-form"
+              [formGroup]="registerForm"
+              (ngSubmit)="submit()"
+            >
+              <mat-form-field>
+                <input
+                  type="email"
+                  matInput
+                  placeholder="Email"
+                  name="register-email"
+                  formControlName="email"
+                />
+                @if(email?.invalid && (email?.dirty || email?.touched)){
+                <mat-error>
+                  @if(email?.errors?.['required']){ Completar email }
+                  @if(email?.errors?.['email']){ Formato inválido }
+                  @if(email?.errors?.['serverError']){ @for(message of
+                  email?.errors?.['serverError']; track message){
+                  {{ message }}
+                  } }
+                </mat-error>
+                }
+              </mat-form-field>
+              <mat-form-field>
+                <input
+                  type="text"
+                  matInput
+                  placeholder="Nombre"
+                  name="register-name"
+                  formControlName="name"
+                />
+                @if(name?.invalid && (name?.dirty || name?.touched)){
+                <mat-error>
+                  @if(name?.errors?.['required']){ Completar nombre }
+                  @if(name?.errors?.['serverError']){ @for(message of
+                    name?.errors?.['serverError']; track message){
+                  {{ message }}
+                  } }
+                </mat-error>
+                }
+              </mat-form-field>
+              <mat-form-field>
+                <input
+                  type="text"
+                  matInput
+                  placeholder="Apellido"
+                  name="register-surname"
+                  formControlName="surname"
+                />
+                @if(surname?.invalid && (surname?.dirty || surname?.touched)){
+                <mat-error>
+                  @if(surname?.errors?.['required']){ Completar apellido }
+                  @if(surname?.errors?.['serverError']){ @for(message of
+                    surname?.errors?.['serverError']; track message){
+                  {{ message }}
+                  } }
+                </mat-error>
+                }
+              </mat-form-field>
+              <mat-form-field>
+                <input
+                  type="text"
+                  matInput
+                  placeholder="Organización"
+                  name="register-organization"
+                  formControlName="organizationName"
+                />
+                @if(organizationName?.invalid && (organizationName?.dirty || organizationName?.touched)){
+                <mat-error>
+                  @if(organizationName?.errors?.['required']){ Completar organización }
+                  @if(organizationName?.errors?.['serverError']){ @for(message of
+                    organizationName?.errors?.['serverError']; track message){
+                  {{ message }}
+                  } }
+                </mat-error>
+                }
+              </mat-form-field>
+              <mat-form-field>
+                <input
+                  type="password"
+                  matInput
+                  placeholder="Contraseña"
+                  name="register-password"
+                  formControlName="password"
+                />
+  
+                @if(password?.invalid && (password?.dirty || password?.touched)){
+                <mat-error>
+                  @if(password?.errors?.['required']){ Completar contraseña }
+                  @if(password?.errors?.['serverError']){ @for(message of
+                  password?.errors?.['serverError']; track message){
+                  {{ message }}
+                  } }
+                </mat-error>
+                }
+              </mat-form-field>
+              <mat-form-field>
+                <input
+                  type="password"
+                  matInput
+                  placeholder="Repetir contraseña"
+                  name="register-password"
+                  formControlName="password2"
+                />
+  
+                @if(password2?.invalid && (password2?.dirty || password2?.touched)){
+                <mat-error>
+                  @if(password2?.errors?.['required']){ Completar contraseña }
+                  @if(password2?.errors?.['serverError']){ @for(message of
+                  password2?.errors?.['serverError']; track message){
+                  {{ message }}
+                  } }
+                </mat-error>
+                }
+              </mat-form-field>
+  
+              <div class="row center">
+                <button
+                  mat-flat-button
+                  color="primary"
+                  type="submit"
+                  [disabled]="!registerForm.valid"
+                >
+                  Registro
+                </button>
+
+                
+              </div>
+
+            </form>
+          </div>
+          <ng-container *ngIf="(isSuccess$ | async) === true">
+          <div class="row center">
+            <div class="server-success">
+              Su registro ha sido completado. Será redirigido a la sección de ingreso en los próximos segundos.
+            </div>
+          </div>
+          <div class="column center">
+            <mat-spinner></mat-spinner>
+          </div>
+        </ng-container>
+          <div class="row extra-buttons">
+            <a mat-button [routerLink]="['/reset-password']"
+              >Olvidé mi contraseña</a
+            >
+            <a mat-button [routerLink]="['/login']">Ingreso</a>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+  

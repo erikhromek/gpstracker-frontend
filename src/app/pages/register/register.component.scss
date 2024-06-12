@@ -1,0 +1,59 @@
+.main-div {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    background-color: azure;
+  }
+  
+  .register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .register-card {
+    padding: 0 40px;
+  }
+  
+  .inputs {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  #logo {
+    margin: 5vh 0;
+  }
+  
+  .register-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .card-header {
+    justify-content: center;
+  }
+  
+  .center {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .extra-buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .server-error {
+    color: red;
+    font-size: 0.875em;
+    margin: 0.25em;
+  }
+
+  .server-success {
+    color: green;
+    font-size: 0.875em;
+    margin: 0.25em;
+  }
+  
