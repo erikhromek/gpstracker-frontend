@@ -4,8 +4,8 @@ import { AuthUser } from '../models/auth-user';
 import { environment } from '../../environments/environment';
 import { AuthToken } from '../models/auth-token';
 import { Observable, tap } from 'rxjs';
-import { Router } from '@angular/router';
 import { RegisterUser } from '../models/register-user';
+import { CreatedUser } from '../models/created-user';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -21,8 +21,11 @@ export class AuthService {
     );
   }
 
-  register(user: RegisterUser): Observable<any> {
-    return this.httpClient.post<any>(`${this.apiUrl}/users/admin/`, user);
+  register(user: RegisterUser): Observable<CreatedUser> {
+    return this.httpClient.post<RegisterUser>(
+      `${this.apiUrl}/users/admin/`,
+      user
+    );
   }
 
   private setSession(authToken: AuthToken): void {

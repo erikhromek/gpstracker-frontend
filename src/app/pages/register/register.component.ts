@@ -1,17 +1,32 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+} from '@angular/core';
 import { AuthService } from '../../services/auth.service';
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { HttpClientModule, HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import {
+  HttpClientModule,
+  HttpErrorResponse,
+  HttpResponse,
+} from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { BehaviorSubject, EMPTY, catchError } from 'rxjs';
+import { BehaviorSubject, EMPTY, catchError, timer } from 'rxjs';
 import { ServerError } from '../../models/server-error';
 import { RegisterUser } from '../../models/register-user';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-register',
@@ -33,8 +48,8 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
   styleUrl: './register.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-
 export class RegisterComponent {
+  private destroyRef = inject(DestroyRef);
   registerForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     name: ['', [Validators.required]],
@@ -43,16 +58,15 @@ export class RegisterComponent {
     password2: ['', Validators.required],
     organizationName: ['', Validators.required],
   });
-  
   errorMessages$ = new BehaviorSubject<ServerError>({});
-
   isSuccess$: BehaviorSubject<Boolean> = new BehaviorSubject<Boolean>(false);
 
-  constructor(private authService: AuthService,
+  constructor(
+    private authService: AuthService,
     private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.checkSession();
@@ -82,13 +96,13 @@ export class RegisterComponent {
     return this.registerForm.get('organizationName');
   }
 
-
   submit() {
     if (this.registerForm.valid) {
       this.errorMessages$.next({});
       this.authService
         .register(this.registerForm.value as RegisterUser)
         .pipe(
+          takeUntilDestroyed(this.destroyRef),
           catchError((error: HttpErrorResponse) => {
             this.handleErrors(error);
             return EMPTY;
@@ -96,11 +110,12 @@ export class RegisterComponent {
         )
         .subscribe(() => {
           this.isSuccess$.next(true);
-          setTimeout( () => {
-            const returnUrl = '/login';
-            this.router.navigateByUrl(returnUrl);
-          }, 3000);
 
+          const source = timer(3000);
+          const returnUrl = '/login';
+          source
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(() => this.router.navigateByUrl(returnUrl));
         });
     }
   }

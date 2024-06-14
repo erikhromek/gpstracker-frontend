@@ -4,6 +4,9 @@ export interface Alert {
   datetimeAttended?: Date;
   datetimeClosed?: Date;
   beneficiaryId: number;
+  beneficiaryName: string;
+  beneficiaryDescription: string;
+  beneficiaryTypeDescription: string;
   telephone: string;
   latitude: number;
   longitude: number;
@@ -11,5 +14,6 @@ export interface Alert {
   operatorId?: number;
   observations?: string;
   typeId?: number;
+  typeDescription?: string;
   messageSid: string;
 }

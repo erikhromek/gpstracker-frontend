@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+} from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import {
   FormBuilder,
@@ -17,6 +22,7 @@ import { AuthUser } from '../../models/auth-user';
 import { ServerError } from '../../models/server-error';
 import { BehaviorSubject, EMPTY, catchError } from 'rxjs';
 import { NgOptimizedImage } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-login',
@@ -38,6 +44,7 @@ import { NgOptimizedImage } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
+  private destroyRef = inject(DestroyRef);
   loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
@@ -73,6 +80,7 @@ export class LoginComponent {
       this.authService
         .login(this.loginForm.value as AuthUser)
         .pipe(
+          takeUntilDestroyed(this.destroyRef),
           catchError((error: HttpErrorResponse) => {
             this.handleErrors(error);
             return EMPTY;

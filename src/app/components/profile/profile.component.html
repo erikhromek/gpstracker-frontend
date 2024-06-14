@@ -1,0 +1,98 @@
+<h2 mat-dialog-title class="center modal-title">Perfil</h2>
+<mat-dialog-content>
+  <div class="inputs">
+    @if(errorMessages$ | async; as errorMessages){ @if
+    (errorMessages?.['detail']) {}
+    <div class="server-error">
+      {{ errorMessages?.['detail'] }}
+    </div>
+    }
+    <form class="profile-form" [formGroup]="profileForm" (ngSubmit)="submit()">
+      <mat-form-field>
+        <input
+          type="email"
+          matInput
+          placeholder="Email"
+          name="profile-email"
+          formControlName="email"
+        />
+        @if(email?.invalid && (email?.dirty || email?.touched)){
+        <mat-error>
+          @if(email?.errors?.['required']){ Completar email }
+          @if(email?.errors?.['email']){ Formato inválido }
+          @if(email?.errors?.['serverError']){ @for(message of
+          email?.errors?.['serverError']; track message){
+          {{ message }}
+          } }
+        </mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field>
+        <input
+          type="text"
+          matInput
+          placeholder="Nombre"
+          name="profile-name"
+          formControlName="name"
+        />
+        @if(name?.invalid && (name?.dirty || name?.touched)){
+        <mat-error>
+          @if(name?.errors?.['required']){ Completar nombre }
+          @if(name?.errors?.['serverError']){ @for(message of
+          name?.errors?.['serverError']; track message){
+          {{ message }}
+          } }
+        </mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field>
+        <input
+          type="text"
+          matInput
+          placeholder="Apellido"
+          name="profile-surname"
+          formControlName="surname"
+        />
+        @if(surname?.invalid && (surname?.dirty || surname?.touched)){
+        <mat-error>
+          @if(surname?.errors?.['required']){ Completar apellido }
+          @if(surname?.errors?.['serverError']){ @for(message of
+          surname?.errors?.['serverError']; track message){
+          {{ message }}
+          } }
+        </mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field>
+        <input
+          type="text"
+          matInput
+          placeholder="Organización"
+          name="profile-organization"
+          formControlName="organizationName"
+        />
+        @if(organizationName?.invalid && (organizationName?.dirty ||
+        organizationName?.touched)){
+        <mat-error>
+          @if(organizationName?.errors?.['required']){ Completar organización }
+          @if(organizationName?.errors?.['serverError']){ @for(message of
+          organizationName?.errors?.['serverError']; track message){
+          {{ message }}
+          } }
+        </mat-error>
+        }
+      </mat-form-field>
+      <div class="center">
+        <button mat-flat-button (click)="closeModal()">Cerrar</button>
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="!profileForm.valid"
+        >
+          Modificar
+        </button>
+      </div>
+    </form>
+  </div>
+</mat-dialog-content>

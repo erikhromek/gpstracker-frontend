@@ -13,7 +13,7 @@
         <mat-card-title> Ingreso </mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <div class="row inputs">
+        <div class="inputs">
           @if(errorMessages$ | async; as errorMessages){ @if
           (errorMessages?.['detail']) {}
           <div class="server-error">
@@ -65,7 +65,7 @@
               }
             </mat-form-field>
 
-            <div class="row center">
+            <div class="center">
               <button
                 mat-flat-button
                 color="primary"
@@ -77,7 +77,7 @@
             </div>
           </form>
         </div>
-        <div class="row extra-buttons">
+        <div class="extra-buttons">
           <a mat-button [routerLink]="['/reset-password']"
             >Olvidé mi contraseña</a
           >

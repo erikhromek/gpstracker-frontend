@@ -15,12 +15,12 @@
 .header-container,
 .content-container {
   display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .content-container {
   padding-bottom: 0px !important;
-  flex-direction: column;
-  align-items: center;
   gap: 10px;
 }
 
