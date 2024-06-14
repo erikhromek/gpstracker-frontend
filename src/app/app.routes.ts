@@ -17,6 +17,12 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/map/map.component').then((m) => m.MapComponent),
       },
+      { path: '', pathMatch: 'full', redirectTo: 'beneficiary-types' },
+      {
+        path: 'beneficiary-types',
+        loadComponent: () =>
+          import('./pages/beneficiary-types/beneficiary-types.component').then((m) => m.BeneficiaryTypesComponent),
+      },
     ],
   },
   {
