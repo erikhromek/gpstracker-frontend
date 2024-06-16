@@ -12,11 +12,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import {
-  HttpClientModule,
-  HttpErrorResponse,
-  HttpResponse,
-} from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -35,7 +31,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
-    HttpClientModule,
     MatCardModule,
     MatFormFieldModule,
     MatButtonModule,
