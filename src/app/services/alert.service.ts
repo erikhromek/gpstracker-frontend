@@ -13,6 +13,13 @@ export class AlertService {
   constructor(private httpClient: HttpClient) {}
 
   getAlerts(): Observable<Alert[]> {
-    return this.httpClient.get<Alert[]>(`${this.apiUrl}/alerts-summary/`);
+    return this.httpClient.get<Alert[]>(`${this.apiUrl}/alerts/`);
+  }
+
+  updateAlert(alert: Alert): Observable<Alert> {
+    return this.httpClient.patch<Alert>(
+      `${this.apiUrl}/alerts/${alert.id}/`,
+      alert
+    );
   }
 }

@@ -7,12 +7,24 @@
     @for (alert of alerts; track alert.id; let e = $even) {
     <mat-list-item role="listitem">
       <span matListItemTitle>
+        <span
+          class="dot-grey"
+          [ngClass]="
+            alert.state === alertStates.N
+              ? 'dot-red'
+              : alert.state === alertStates.A
+              ? 'dot-orange'
+              : 'dot-grey'
+          "
+        ></span>
+
         {{ alert.datetime | date : "dd/MM/yyyy hh:mm a" }}
       </span>
-      <span matListItemTitle>
+      <span matListItemLine>
         {{ alert.beneficiaryName }} {{ alert.telephone }}
       </span>
     </mat-list-item>
+
     @if(e){
     <mat-divider></mat-divider>
     } }@empty {
@@ -26,6 +38,7 @@
     <div
       id="map"
       leaflet
+      (leafletMapReady)="onMapReady($event)"
       [leafletOptions]="options"
       [leafletLayers]="layers"
     ></div>
