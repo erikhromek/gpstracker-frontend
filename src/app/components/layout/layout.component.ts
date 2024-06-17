@@ -4,7 +4,7 @@ import {
   DestroyRef,
   inject,
 } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
@@ -29,6 +29,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     RouterLink,
     MatListModule,
     NgOptimizedImage,
+    RouterLinkActive,
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss',
