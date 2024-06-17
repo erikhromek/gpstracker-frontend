@@ -1,43 +1,38 @@
 <div class="beneficiary-types-container">
-<table mat-table [dataSource]="(beneficiaryTypes$ | async ) ?? []">
-
-    <!--- Note that these columns can be defined in any order.
-          The actual rendered columns are set as a property on the row definition" -->
-  
+  <table mat-table [dataSource]="(beneficiaryTypes$ | async) ?? []">
     <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef> ID </th>
-      <td mat-cell *matCellDef="let type"> {{type.id}} </td>
+      <th mat-header-cell *matHeaderCellDef>ID</th>
+      <td mat-cell *matCellDef="let type">{{ type.id }}</td>
     </ng-container>
     <ng-container matColumnDef="code">
-      <th mat-header-cell *matHeaderCellDef> Código </th>
-      <td mat-cell *matCellDef="let type"> {{type.code}} </td>
+      <th mat-header-cell *matHeaderCellDef>Código</th>
+      <td mat-cell *matCellDef="let type">{{ type.code }}</td>
     </ng-container>
-  
+
     <ng-container matColumnDef="description">
-      <th mat-header-cell *matHeaderCellDef> Descripción </th>
-      <td mat-cell *matCellDef="let type"> {{type.description}} </td>
+      <th mat-header-cell *matHeaderCellDef>Descripción</th>
+      <td mat-cell *matCellDef="let type">{{ type.description }}</td>
     </ng-container>
 
     <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef> Acciones </th>
-        <mat-cell *matCellDef="let row">
-            <button mat-icon-button aria-label="Editar">
-                <mat-icon color="primary">edit</mat-icon>
-              </button>
-              <button mat-icon-button aria-label="Eliminar">
-                <mat-icon color="warn">delete</mat-icon>
-              </button>
-        </mat-cell>
-      </ng-container>
-
-
-      <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-  <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
-
-  
+      <th mat-header-cell *matHeaderCellDef>Acciones</th>
+      <mat-cell *matCellDef="let type">
+        <button
+          mat-icon-button
+          aria-label="Editar"
+          (click)="openEditModal(type.id)"
+        >
+          <mat-icon color="primary">edit</mat-icon>
+        </button>
+        <button mat-icon-button aria-label="Eliminar">
+          <mat-icon color="warn">delete</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+    <tr mat-row *matRowDef="let row; columns: columnsToDisplay"></tr>
   </table>
   <ng-container *ngIf="(isLoading$ | async) === true">
     <mat-spinner></mat-spinner>
   </ng-container>
-
 </div>

@@ -16,6 +16,10 @@ import { BeneficiaryType } from '../models/beneficiary-type';
         return this.httpClient.get<BeneficiaryType[]>(`${this.apiUrl}/beneficiary-types/`);
     }
 
+    getBeneficiaryType(id: number): Observable<BeneficiaryType> {
+      return this.httpClient.get<BeneficiaryType>(`${this.apiUrl}/beneficiary-types/${id}/`);
+  }
+
     createBeneficiaryType(beneficiaryType: BeneficiaryType): Observable<BeneficiaryType> {
         return this.httpClient.post<BeneficiaryType>(`${this.apiUrl}/beneficiary-types/`, beneficiaryType);
     }

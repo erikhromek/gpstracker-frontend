@@ -94,7 +94,6 @@ export class ProfileComponent {
 
   submit() {
     if (this.profileForm.valid) {
-      console.log('AA');
       this.errorMessages$.next({});
       const updateUser = {
         name: this.profileForm.value.name,
