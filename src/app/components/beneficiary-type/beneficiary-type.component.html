@@ -1,0 +1,60 @@
+<h2 mat-dialog-title class="center modal-title">Tipo de beneficiario</h2>
+<mat-dialog-content>
+  <div class="inputs">
+    @if(errorMessages$ | async; as errorMessages){ @if
+    (errorMessages?.['detail']) {}
+    <div class="server-error">
+      {{ errorMessages?.['detail'] }}
+    </div>
+    }
+    <form class="beneficiary-type-form" [formGroup]="beneficiaryTypeForm" (ngSubmit)="submit()">
+      <mat-form-field>
+        <input
+          type="text"
+          matInput
+          placeholder="Código"
+          name="beneficiary-type-code"
+          formControlName="code"
+        />
+        @if(code?.invalid && (code?.dirty || code?.touched)){
+        <mat-error>
+          @if(code?.errors?.['required']){ Completar código }
+          @if(code?.errors?.['serverError']){ @for(message of
+            code?.errors?.['serverError']; track message){
+          {{ message }}
+          } }
+        </mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field>
+        <input
+          type="text"
+          matInput
+          placeholder="Descripción"
+          name="beneficiary-type-name"
+          formControlName="description"
+        />
+        @if(description?.invalid && (description?.dirty || description?.touched)){
+        <mat-error>
+          @if(description?.errors?.['required']){ Completar descripción }
+          @if(description?.errors?.['serverError']){ @for(message of
+            description?.errors?.['serverError']; track message){
+          {{ message }}
+          } }
+        </mat-error>
+        }
+      </mat-form-field>
+      <div class="center">
+        <button mat-flat-button [mat-dialog-close]="false">Cerrar</button>
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="!beneficiaryTypeForm.valid"
+        >
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</mat-dialog-content>
