@@ -24,8 +24,8 @@ import { BeneficiaryType } from '../models/beneficiary-type';
         return this.httpClient.post<BeneficiaryType>(`${this.apiUrl}/beneficiary-types/`, beneficiaryType);
     }
   
-    updateBeneficiaryType(id: number, beneficiaryType: BeneficiaryType): Observable<BeneficiaryType> {
-      return this.httpClient.patch<BeneficiaryType>(`${this.apiUrl}/beneficiary-types/${id}/`, beneficiaryType);
+    updateBeneficiaryType(beneficiaryType: BeneficiaryType): Observable<BeneficiaryType> {
+      return this.httpClient.patch<BeneficiaryType>(`${this.apiUrl}/beneficiary-types/${beneficiaryType.id}/`, beneficiaryType);
     }
 
     deleteBeneficiaryType(id: number): Observable<void> {

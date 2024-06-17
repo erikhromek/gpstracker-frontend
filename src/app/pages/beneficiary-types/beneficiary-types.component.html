@@ -3,10 +3,13 @@
     <mat-spinner></mat-spinner>
   </ng-container>
 
+  <div class="new-item">
+    <button mat-fab color="secondary" aria-label="Crear" (click)="openCreateModal()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+
   <table mat-table [dataSource]="(beneficiaryTypes$ | async)  ?? []">
-
-    
-
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef>ID</th>
       <td mat-cell *matCellDef="let type">{{ type.id }}</td>

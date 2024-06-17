@@ -28,6 +28,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
+import { BeneficiaryTypeModal } from '../../models/beneficiary-type-modal';
+import { ActionModal } from '../../models/action-modal';
 
 @Component({
   selector: 'app-beneficiary-type',
@@ -50,14 +52,14 @@ import { MatInputModule } from '@angular/material/input';
 export class BeneficiaryTypeComponent {
   private destroyRef = inject(DestroyRef);
   beneficiaryTypeForm = this.fb.group({
-    code: [this.data.code, [Validators.required]],
-    description: [this.data.description, [Validators.required]],
+    code: [this.data.beneficiaryType.code, [Validators.required]],
+    description: [this.data.beneficiaryType.description, [Validators.required]],
   });
   errorMessages$ = new BehaviorSubject<ServerError>({});
 
   constructor(
     public dialogRef: MatDialogRef<BeneficiaryTypeComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: BeneficiaryType,
+    @Inject(MAT_DIALOG_DATA) public data: BeneficiaryTypeModal,
     private beneficiaryTypeService: BeneficiaryTypeService,
     private fb: FormBuilder
   ) {}
@@ -73,16 +75,15 @@ export class BeneficiaryTypeComponent {
   submit() {
     if (this.beneficiaryTypeForm.valid) {
       this.errorMessages$.next({});
-      const updateBeneficiaryType = {
+      const beneficiaryType = {
+        id: this.data.beneficiaryType.id,
         code: this.beneficiaryTypeForm.value.code,
         description: this.beneficiaryTypeForm.value.description,
       };
-      this.beneficiaryTypeService
-        .updateBeneficiaryType(
-          this.data.id,
-          updateBeneficiaryType as BeneficiaryType
-        )
-        .pipe(
+
+      const operation = (this.data.type == ActionModal.create) ? "createBeneficiaryType" : "updateBeneficiaryType";
+
+      this.beneficiaryTypeService[operation](beneficiaryType as BeneficiaryType).pipe(
           takeUntilDestroyed(this.destroyRef),
           catchError((error: HttpErrorResponse) => {
             if (error.status === 400) {

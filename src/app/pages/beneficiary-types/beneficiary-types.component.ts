@@ -12,6 +12,7 @@ import { BeneficiaryTypeComponent } from '../../components/beneficiary-type/bene
 import { MatDialog } from '@angular/material/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfirmationDialogComponent } from '../../components/confirmation-dialog/confirmation-dialog.component';
+import { ActionModal } from '../../models/action-modal';
 
 @Component({
   selector: 'app-beneficiary-types',
@@ -56,13 +57,27 @@ export class BeneficiaryTypesComponent {
       );
   }
 
+  openCreateModal(): void {
+    const beneficiaryType = {id: -1, code: "", description: ""};
+    const dialogRef = this.dialog.open(BeneficiaryTypeComponent, {
+      data: {type: ActionModal.create, beneficiaryType},
+      width: '90vw',
+      maxWidth: '650px',
+    });
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (result) {
+        this.getBeneficiaryTypes();
+      }
+    });
+  }
+
   openEditModal(id: number): void {
     this.beneficiaryTypeService
       .getBeneficiaryType(id)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((beneficiaryType: BeneficiaryType) => {
         const dialogRef = this.dialog.open(BeneficiaryTypeComponent, {
-          data: beneficiaryType,
+          data: {type: ActionModal.update, beneficiaryType},
           width: '90vw',
           maxWidth: '650px',
         });
