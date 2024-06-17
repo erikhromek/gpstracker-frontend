@@ -1,0 +1,27 @@
+.beneficiary-type-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .modal-title {
+    margin-top: 15px;
+  }
+  
+  .inputs {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .center {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .server-error {
+    color: red;
+    font-size: 0.875em;
+    margin: 0.25em;
+  }
+  

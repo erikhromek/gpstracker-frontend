@@ -1,0 +1,13 @@
+<h2 mat-dialog-title class="center modal-title">{{message}}</h2>
+<mat-dialog-content>
+    <div class="center">
+        <button mat-flat-button [mat-dialog-close]="false">Cancelar</button>
+        <button
+        mat-flat-button
+        color="primary"
+        [mat-dialog-close]="true"
+        >
+        Confirmar
+        </button>
+    </div>
+</mat-dialog-content>
