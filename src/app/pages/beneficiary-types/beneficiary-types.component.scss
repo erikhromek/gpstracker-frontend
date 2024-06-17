@@ -1,8 +1,13 @@
 :host {
-    display: flex;
-    flex: 1;
-  }
+  display: flex;
+  flex: 1;
+}
 
 .beneficiary-types-container {
-    width: 100%;
+  width: 100%;
+}
+
+.empty-data {
+  padding: 10px;
+  font-weight: bold;
 }

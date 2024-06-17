@@ -4,13 +4,14 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { BehaviorSubject, Observable, finalize } from 'rxjs';
+import { BehaviorSubject, Observable, finalize, share, shareReplay } from 'rxjs';
 import { BeneficiaryTypeService } from '../../services/beneficiary-type.service';
 import { BeneficiaryType } from '../../models/beneficiary-type';
 import { CommonModule } from '@angular/common';
 import { BeneficiaryTypeComponent } from '../../components/beneficiary-type/beneficiary-type.component';
 import { MatDialog } from '@angular/material/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ConfirmationDialogComponent } from '../../components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-beneficiary-types',
@@ -45,6 +46,7 @@ export class BeneficiaryTypesComponent {
   }
 
   public getBeneficiaryTypes(): void {
+    this.isLoading$.next(true); // FIXME por qué es necesario esto?
     this.beneficiaryTypes$ = this.beneficiaryTypeService
       .getBeneficiaryTypes()
       .pipe(
@@ -73,16 +75,16 @@ export class BeneficiaryTypesComponent {
   }
 
   openDeleteModal(id: number): void {
-    this.beneficiaryTypeService
-      .getBeneficiaryType(id)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((beneficiaryType: BeneficiaryType) => {
-        this.dialog.open(BeneficiaryTypeComponent, {
-          data: beneficiaryType,
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+          data: '¿Desea eliminar el tipo de beneficiario?',
           width: '90vw',
           maxWidth: '650px',
         });
-      });
+        dialogRef.afterClosed().subscribe((result: boolean) => {
+          if (result) {
+            this.beneficiaryTypeService.deleteBeneficiaryType(id).subscribe(() => {this.getBeneficiaryTypes()});
+          }
+        });
   }
 
 }

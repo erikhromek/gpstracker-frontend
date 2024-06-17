@@ -28,8 +28,8 @@ import { BeneficiaryType } from '../models/beneficiary-type';
       return this.httpClient.patch<BeneficiaryType>(`${this.apiUrl}/beneficiary-types/${id}/`, beneficiaryType);
     }
 
-    deleteBeneficiaryType(id: number): void {
-        this.httpClient.delete(`${this.apiUrl}/beneficiary-types/${id}/`);
+    deleteBeneficiaryType(id: number): Observable<void> {
+        return this.httpClient.delete<void>(`${this.apiUrl}/beneficiary-types/${id}/`);
       }
 
   }
