@@ -20,14 +20,17 @@
           name="beneficiary-type-code"
           formControlName="code"
         />
-        @if(code?.invalid && (code?.dirty || code?.touched)){
-        <mat-error>
-          @if(code?.errors?.['required']){ Completar código }
-          @if(code?.errors?.['serverError']){ @for(message of
-          code?.errors?.['serverError']; track message){
-          {{ message }}
-          } }
-        </mat-error>
+        @if (code?.invalid && (code?.dirty || code?.touched)) {
+          <mat-error>
+            @if (code?.errors?.["required"]) {
+              Completar código
+            }
+            @if (code?.errors?.["serverError"]) {
+              @for (message of code?.errors?.["serverError"]; track message) {
+                {{ message }}
+              }
+            }
+          </mat-error>
         }
       </mat-form-field>
       <mat-form-field>
@@ -38,15 +41,22 @@
           name="beneficiary-type-name"
           formControlName="description"
         />
-        @if(description?.invalid && (description?.dirty ||
-        description?.touched)){
-        <mat-error>
-          @if(description?.errors?.['required']){ Completar descripción }
-          @if(description?.errors?.['serverError']){ @for(message of
-          description?.errors?.['serverError']; track message){
-          {{ message }}
-          } }
-        </mat-error>
+        @if (
+          description?.invalid && (description?.dirty || description?.touched)
+        ) {
+          <mat-error>
+            @if (description?.errors?.["required"]) {
+              Completar descripción
+            }
+            @if (description?.errors?.["serverError"]) {
+              @for (
+                message of description?.errors?.["serverError"];
+                track message
+              ) {
+                {{ message }}
+              }
+            }
+          </mat-error>
         }
       </mat-form-field>
       <div class="center">
