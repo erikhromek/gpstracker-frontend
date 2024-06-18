@@ -1,1 +1,65 @@
-<p>alert-type works!</p>
+<h2 mat-dialog-title class="center modal-title">Tipo de alerta</h2>
+<mat-dialog-content>
+  <div class="inputs">
+    @if(errorMessages$ | async; as errorMessages){ @if
+    (errorMessages?.['detail']) {}
+    <div class="server-error">
+      {{ errorMessages?.['detail'] }}
+    </div>
+    }
+    <form
+      class="alert-type-form"
+      [formGroup]="alertTypeForm"
+      (ngSubmit)="submit()"
+    >
+      <mat-form-field>
+        <input
+          type="text"
+          matInput
+          placeholder="Código"
+          name="alert-type-code"
+          formControlName="code"
+        />
+        @if(code?.invalid && (code?.dirty || code?.touched)){
+        <mat-error>
+          @if(code?.errors?.['required']){ Completar código }
+          @if(code?.errors?.['serverError']){ @for(message of
+          code?.errors?.['serverError']; track message){
+          {{ message }}
+          } }
+        </mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field>
+        <input
+          type="text"
+          matInput
+          placeholder="Descripción"
+          name="alert-type-name"
+          formControlName="description"
+        />
+        @if(description?.invalid && (description?.dirty ||
+        description?.touched)){
+        <mat-error>
+          @if(description?.errors?.['required']){ Completar descripción }
+          @if(description?.errors?.['serverError']){ @for(message of
+          description?.errors?.['serverError']; track message){
+          {{ message }}
+          } }
+        </mat-error>
+        }
+      </mat-form-field>
+      <div class="center">
+        <button mat-flat-button [mat-dialog-close]="false">Cerrar</button>
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="!alertTypeForm.valid"
+        >
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</mat-dialog-content>
