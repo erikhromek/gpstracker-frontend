@@ -1,0 +1,22 @@
+:host {
+    display: flex;
+    flex: 1;
+  }
+  
+  .alert-types-container {
+    width: 100%;
+  }
+  
+  .center {
+    display: flex;
+    justify-content: center;
+  }
+
+  .empty-data {
+    padding: 10px;
+    font-weight: bold;
+  }
+  
+  .new-item {
+    padding: 10px 0px;
+  }
