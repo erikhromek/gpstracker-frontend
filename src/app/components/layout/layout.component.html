@@ -5,7 +5,13 @@
         <mat-icon>menu</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item disabled>
+        <button
+          mat-menu-item
+          [routerLink]="['/map']"
+          routerLinkActive
+          #rlaMap="routerLinkActive"
+          [disabled]="rlaMap.isActive"
+        >
           <span>Mapa</span>
         </button>
         <button mat-menu-item>
@@ -14,7 +20,13 @@
         <button mat-menu-item>
           <span>Alertas</span>
         </button>
-        <button mat-menu-item [routerLink]="['/beneficiary-types']">
+        <button
+          mat-menu-item
+          [routerLink]="['/beneficiary-types']"
+          routerLinkActive
+          #rlaBeneficiaryTypes="routerLinkActive"
+          [disabled]="rlaBeneficiaryTypes.isActive"
+        >
           <span>Tipos de beneficiario</span>
         </button>
         <button mat-menu-item>
@@ -23,7 +35,7 @@
         <!-- TODO: implementar
          <button mat-menu-item>
           <span>Usuarios</span>
-        </button> --> 
+        </button> -->
       </mat-menu>
     </div>
     <div class="logo">

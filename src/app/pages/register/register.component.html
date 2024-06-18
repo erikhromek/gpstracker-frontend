@@ -14,11 +14,11 @@
       </mat-card-header>
       <mat-card-content>
         <div class="inputs">
-          @if(errorMessages$ | async; as errorMessages){ @if
-          (errorMessages?.['detail']) {}
-          <div class="server-error">
-            {{ errorMessages?.['detail'] }}
-          </div>
+          @if (errorMessages$ | async; as errorMessages) {
+            @if (errorMessages?.["detail"]) {}
+            <div class="server-error">
+              {{ errorMessages?.["detail"] }}
+            </div>
           }
           <form
             class="register-form"
@@ -33,15 +33,23 @@
                 name="register-email"
                 formControlName="email"
               />
-              @if(email?.invalid && (email?.dirty || email?.touched)){
-              <mat-error>
-                @if(email?.errors?.['required']){ Completar email }
-                @if(email?.errors?.['email']){ Formato inválido }
-                @if(email?.errors?.['serverError']){ @for(message of
-                email?.errors?.['serverError']; track message){
-                {{ message }}
-                } }
-              </mat-error>
+              @if (email?.invalid && (email?.dirty || email?.touched)) {
+                <mat-error>
+                  @if (email?.errors?.["required"]) {
+                    Completar email
+                  }
+                  @if (email?.errors?.["email"]) {
+                    Formato inválido
+                  }
+                  @if (email?.errors?.["serverError"]) {
+                    @for (
+                      message of email?.errors?.["serverError"];
+                      track message
+                    ) {
+                      {{ message }}
+                    }
+                  }
+                </mat-error>
               }
             </mat-form-field>
             <mat-form-field>
@@ -52,14 +60,20 @@
                 name="register-name"
                 formControlName="name"
               />
-              @if(name?.invalid && (name?.dirty || name?.touched)){
-              <mat-error>
-                @if(name?.errors?.['required']){ Completar nombre }
-                @if(name?.errors?.['serverError']){ @for(message of
-                name?.errors?.['serverError']; track message){
-                {{ message }}
-                } }
-              </mat-error>
+              @if (name?.invalid && (name?.dirty || name?.touched)) {
+                <mat-error>
+                  @if (name?.errors?.["required"]) {
+                    Completar nombre
+                  }
+                  @if (name?.errors?.["serverError"]) {
+                    @for (
+                      message of name?.errors?.["serverError"];
+                      track message
+                    ) {
+                      {{ message }}
+                    }
+                  }
+                </mat-error>
               }
             </mat-form-field>
             <mat-form-field>
@@ -70,14 +84,20 @@
                 name="register-surname"
                 formControlName="surname"
               />
-              @if(surname?.invalid && (surname?.dirty || surname?.touched)){
-              <mat-error>
-                @if(surname?.errors?.['required']){ Completar apellido }
-                @if(surname?.errors?.['serverError']){ @for(message of
-                surname?.errors?.['serverError']; track message){
-                {{ message }}
-                } }
-              </mat-error>
+              @if (surname?.invalid && (surname?.dirty || surname?.touched)) {
+                <mat-error>
+                  @if (surname?.errors?.["required"]) {
+                    Completar apellido
+                  }
+                  @if (surname?.errors?.["serverError"]) {
+                    @for (
+                      message of surname?.errors?.["serverError"];
+                      track message
+                    ) {
+                      {{ message }}
+                    }
+                  }
+                </mat-error>
               }
             </mat-form-field>
             <mat-form-field>
@@ -88,16 +108,23 @@
                 name="register-organization"
                 formControlName="organizationName"
               />
-              @if(organizationName?.invalid && (organizationName?.dirty ||
-              organizationName?.touched)){
-              <mat-error>
-                @if(organizationName?.errors?.['required']){ Completar
-                organización } @if(organizationName?.errors?.['serverError']){
-                @for(message of organizationName?.errors?.['serverError']; track
-                message){
-                {{ message }}
-                } }
-              </mat-error>
+              @if (
+                organizationName?.invalid &&
+                (organizationName?.dirty || organizationName?.touched)
+              ) {
+                <mat-error>
+                  @if (organizationName?.errors?.["required"]) {
+                    Completar organización
+                  }
+                  @if (organizationName?.errors?.["serverError"]) {
+                    @for (
+                      message of organizationName?.errors?.["serverError"];
+                      track message
+                    ) {
+                      {{ message }}
+                    }
+                  }
+                </mat-error>
               }
             </mat-form-field>
             <mat-form-field>
@@ -109,14 +136,22 @@
                 formControlName="password"
               />
 
-              @if(password?.invalid && (password?.dirty || password?.touched)){
-              <mat-error>
-                @if(password?.errors?.['required']){ Completar contraseña }
-                @if(password?.errors?.['serverError']){ @for(message of
-                password?.errors?.['serverError']; track message){
-                {{ message }}
-                } }
-              </mat-error>
+              @if (
+                password?.invalid && (password?.dirty || password?.touched)
+              ) {
+                <mat-error>
+                  @if (password?.errors?.["required"]) {
+                    Completar contraseña
+                  }
+                  @if (password?.errors?.["serverError"]) {
+                    @for (
+                      message of password?.errors?.["serverError"];
+                      track message
+                    ) {
+                      {{ message }}
+                    }
+                  }
+                </mat-error>
               }
             </mat-form-field>
             <mat-form-field>
@@ -128,15 +163,22 @@
                 formControlName="password2"
               />
 
-              @if(password2?.invalid && (password2?.dirty ||
-              password2?.touched)){
-              <mat-error>
-                @if(password2?.errors?.['required']){ Completar contraseña }
-                @if(password2?.errors?.['serverError']){ @for(message of
-                password2?.errors?.['serverError']; track message){
-                {{ message }}
-                } }
-              </mat-error>
+              @if (
+                password2?.invalid && (password2?.dirty || password2?.touched)
+              ) {
+                <mat-error>
+                  @if (password2?.errors?.["required"]) {
+                    Completar contraseña
+                  }
+                  @if (password2?.errors?.["serverError"]) {
+                    @for (
+                      message of password2?.errors?.["serverError"];
+                      track message
+                    ) {
+                      {{ message }}
+                    }
+                  }
+                </mat-error>
               }
             </mat-form-field>
 
@@ -152,16 +194,16 @@
             </div>
           </form>
         </div>
-        @if((isSuccess$ | async) === true){
-        <div class="center">
-          <div class="server-success">
-            Su registro ha sido completado. Será redirigido a la sección de
-            ingreso en los próximos segundos.
+        @if ((isSuccess$ | async) === true) {
+          <div class="center">
+            <div class="server-success">
+              Su registro ha sido completado. Será redirigido a la sección de
+              ingreso en los próximos segundos.
+            </div>
           </div>
-        </div>
-        <div class="center">
-          <mat-spinner></mat-spinner>
-        </div>
+          <div class="center">
+            <mat-spinner></mat-spinner>
+          </div>
         }
         <div class="extra-buttons">
           <a mat-button [routerLink]="['/reset-password']"

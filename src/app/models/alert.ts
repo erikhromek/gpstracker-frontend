@@ -10,10 +10,16 @@ export interface Alert {
   telephone: string;
   latitude: number;
   longitude: number;
-  state: string;
+  state: AlertState;
   operatorId?: number;
   observations?: string;
   typeId?: number;
   typeDescription?: string;
   messageSid: string;
+}
+
+export enum AlertState {
+  'N' = 'N',
+  'A' = 'A',
+  'C' = 'C',
 }

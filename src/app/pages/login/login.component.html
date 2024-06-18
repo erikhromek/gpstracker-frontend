@@ -14,11 +14,11 @@
       </mat-card-header>
       <mat-card-content>
         <div class="inputs">
-          @if(errorMessages$ | async; as errorMessages){ @if
-          (errorMessages?.['detail']) {}
-          <div class="server-error">
-            {{ errorMessages?.['detail'] }}
-          </div>
+          @if (errorMessages$ | async; as errorMessages) {
+            @if (errorMessages?.["detail"]) {}
+            <div class="server-error">
+              {{ errorMessages?.["detail"] }}
+            </div>
           }
 
           <form
@@ -34,15 +34,23 @@
                 name="login-email"
                 formControlName="email"
               />
-              @if(email?.invalid && (email?.dirty || email?.touched)){
-              <mat-error>
-                @if(email?.errors?.['required']){ Completar email }
-                @if(email?.errors?.['email']){ Formato inválido }
-                @if(email?.errors?.['serverError']){ @for(message of
-                email?.errors?.['serverError']; track message){
-                {{ message }}
-                } }
-              </mat-error>
+              @if (email?.invalid && (email?.dirty || email?.touched)) {
+                <mat-error>
+                  @if (email?.errors?.["required"]) {
+                    Completar email
+                  }
+                  @if (email?.errors?.["email"]) {
+                    Formato inválido
+                  }
+                  @if (email?.errors?.["serverError"]) {
+                    @for (
+                      message of email?.errors?.["serverError"];
+                      track message
+                    ) {
+                      {{ message }}
+                    }
+                  }
+                </mat-error>
               }
             </mat-form-field>
             <mat-form-field>
@@ -54,14 +62,22 @@
                 formControlName="password"
               />
 
-              @if(password?.invalid && (password?.dirty || password?.touched)){
-              <mat-error>
-                @if(password?.errors?.['required']){ Completar contraseña }
-                @if(password?.errors?.['serverError']){ @for(message of
-                password?.errors?.['serverError']; track message){
-                {{ message }}
-                } }
-              </mat-error>
+              @if (
+                password?.invalid && (password?.dirty || password?.touched)
+              ) {
+                <mat-error>
+                  @if (password?.errors?.["required"]) {
+                    Completar contraseña
+                  }
+                  @if (password?.errors?.["serverError"]) {
+                    @for (
+                      message of password?.errors?.["serverError"];
+                      track message
+                    ) {
+                      {{ message }}
+                    }
+                  }
+                </mat-error>
               }
             </mat-form-field>
 

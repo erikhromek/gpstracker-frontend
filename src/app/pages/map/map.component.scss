@@ -23,3 +23,24 @@
 #map {
   height: 100%;
 }
+
+.dot-grey,
+.dot-green,
+.dot-orange {
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot-grey {
+  background-color: #bbb;
+}
+
+.dot-red {
+  background-color: red;
+}
+
+.dot-orange {
+  background-color: orange;
+}

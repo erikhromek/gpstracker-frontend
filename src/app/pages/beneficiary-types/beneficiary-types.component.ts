@@ -1,10 +1,15 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+} from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { BehaviorSubject, Observable, finalize, share, shareReplay } from 'rxjs';
+import { BehaviorSubject, Observable, finalize } from 'rxjs';
 import { BeneficiaryTypeService } from '../../services/beneficiary-type.service';
 import { BeneficiaryType } from '../../models/beneficiary-type';
 import { CommonModule } from '@angular/common';
@@ -58,9 +63,9 @@ export class BeneficiaryTypesComponent {
   }
 
   openCreateModal(): void {
-    const beneficiaryType = {id: -1, code: "", description: ""};
+    const beneficiaryType = { id: -1, code: '', description: '' };
     const dialogRef = this.dialog.open(BeneficiaryTypeComponent, {
-      data: {type: ActionModal.create, beneficiaryType},
+      data: { type: ActionModal.create, beneficiaryType },
       width: '90vw',
       maxWidth: '650px',
     });
@@ -77,7 +82,7 @@ export class BeneficiaryTypesComponent {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((beneficiaryType: BeneficiaryType) => {
         const dialogRef = this.dialog.open(BeneficiaryTypeComponent, {
-          data: {type: ActionModal.update, beneficiaryType},
+          data: { type: ActionModal.update, beneficiaryType },
           width: '90vw',
           maxWidth: '650px',
         });
@@ -90,16 +95,17 @@ export class BeneficiaryTypesComponent {
   }
 
   openDeleteModal(id: number): void {
-        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-          data: '¿Desea eliminar el tipo de beneficiario?',
-          width: '90vw',
-          maxWidth: '650px',
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: '¿Desea eliminar el tipo de beneficiario?',
+      width: '90vw',
+      maxWidth: '650px',
+    });
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (result) {
+        this.beneficiaryTypeService.deleteBeneficiaryType(id).subscribe(() => {
+          this.getBeneficiaryTypes();
         });
-        dialogRef.afterClosed().subscribe((result: boolean) => {
-          if (result) {
-            this.beneficiaryTypeService.deleteBeneficiaryType(id).subscribe(() => {this.getBeneficiaryTypes()});
-          }
-        });
+      }
+    });
   }
-
 }

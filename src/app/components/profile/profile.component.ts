@@ -6,13 +6,10 @@ import {
   inject,
 } from '@angular/core';
 import {
-  MatDialog,
   MAT_DIALOG_DATA,
   MatDialogRef,
   MatDialogTitle,
   MatDialogContent,
-  MatDialogActions,
-  MatDialogClose,
 } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -30,7 +27,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ServerError } from '../../models/server-error';
 import { BehaviorSubject, EMPTY, catchError } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { UpdateUser } from '../../models/update-user';
 
 @Component({
   selector: 'app-profile',
@@ -53,21 +49,21 @@ export class ProfileComponent {
   private destroyRef = inject(DestroyRef);
   profileForm = this.fb.group({
     email: [
-      { value: this.data.email, disabled: true },
+      { value: this.user.email, disabled: true },
       [Validators.required, Validators.email],
     ],
-    name: [this.data.name, [Validators.required]],
-    surname: [this.data.surname, [Validators.required]],
+    name: [this.user.name, [Validators.required]],
+    surname: [this.user.surname, [Validators.required]],
     organizationName: [
-      { value: this.data.organizationName, disabled: true },
+      { value: this.user.organizationName, disabled: true },
       Validators.required,
     ],
   });
   errorMessages$ = new BehaviorSubject<ServerError>({});
 
   constructor(
-    public dialogRef: MatDialogRef<ProfileComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: User,
+    @Inject(MAT_DIALOG_DATA) private user: User,
+    private dialogRef: MatDialogRef<ProfileComponent>,
     private userService: UserService,
     private fb: FormBuilder
   ) {}
@@ -95,12 +91,10 @@ export class ProfileComponent {
   submit() {
     if (this.profileForm.valid) {
       this.errorMessages$.next({});
-      const updateUser = {
-        name: this.profileForm.value.name,
-        surname: this.profileForm.value.surname,
-      };
+
+      const updateUser = { ...this.user, ...this.profileForm.value } as User;
       this.userService
-        .updateProfile(this.data.id, updateUser as UpdateUser)
+        .updateProfile(updateUser)
         .pipe(
           takeUntilDestroyed(this.destroyRef),
           catchError((error: HttpErrorResponse) => {

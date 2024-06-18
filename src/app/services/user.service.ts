@@ -3,7 +3,6 @@ import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { User } from '../models/user';
-import { UpdateUser } from '../models/update-user';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +16,10 @@ export class UserService {
     return this.httpClient.get<User>(`${this.apiUrl}/users/details/`);
   }
 
-  updateProfile(id: number, user: UpdateUser): Observable<User> {
-    return this.httpClient.patch<User>(`${this.apiUrl}/users/${id}/`, user);
+  updateProfile(user: User): Observable<User> {
+    return this.httpClient.patch<User>(
+      `${this.apiUrl}/users/${user.id}/`,
+      user
+    );
   }
 }
