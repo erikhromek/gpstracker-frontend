@@ -1,15 +1,15 @@
-<h2 mat-dialog-title class="center modal-title">Tipo de beneficiario</h2>
+<h2 mat-dialog-title class="center modal-title">Tipo de alerta</h2>
 <mat-dialog-content>
   <div class="inputs">
-    @if (errorMessages$ | async; as errorMessages) {
-      @if (errorMessages?.["detail"]) {}
-      <div class="server-error">
-        {{ errorMessages?.["detail"] }}
-      </div>
+    @if(errorMessages$ | async; as errorMessages){ @if
+    (errorMessages?.['detail']) {}
+    <div class="server-error">
+      {{ errorMessages?.['detail'] }}
+    </div>
     }
     <form
-      class="beneficiary-type-form"
-      [formGroup]="beneficiaryTypeForm"
+      class="alert-type-form"
+      [formGroup]="alertTypeForm"
       (ngSubmit)="submit()"
     >
       <mat-form-field>
@@ -17,7 +17,7 @@
           type="text"
           matInput
           placeholder="Código"
-          name="beneficiary-type-code"
+          name="alert-type-code"
           formControlName="code"
         />
         @if(code?.invalid && (code?.dirty || code?.touched)){
@@ -35,7 +35,7 @@
           type="text"
           matInput
           placeholder="Descripción"
-          name="beneficiary-type-name"
+          name="alert-type-name"
           formControlName="description"
         />
         @if(description?.invalid && (description?.dirty ||
@@ -55,7 +55,7 @@
           mat-flat-button
           color="primary"
           type="submit"
-          [disabled]="!beneficiaryTypeForm.valid"
+          [disabled]="!alertTypeForm.valid"
         >
           Guardar
         </button>

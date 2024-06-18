@@ -21,7 +21,16 @@ export const routes: Routes = [
       {
         path: 'beneficiary-types',
         loadComponent: () =>
-          import('./pages/beneficiary-types/beneficiary-types.component').then((m) => m.BeneficiaryTypesComponent),
+          import('./pages/beneficiary-types/beneficiary-types.component').then(
+            (m) => m.BeneficiaryTypesComponent
+          ),
+      },
+      {
+        path: 'alert-types',
+        loadComponent: () =>
+          import('./pages/alert-types/alert-types.component').then(
+            (m) => m.AlertTypesComponent
+          ),
       },
     ],
   },
