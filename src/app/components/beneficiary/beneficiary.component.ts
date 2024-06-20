@@ -74,7 +74,7 @@ export class BeneficiaryComponent {
         Validators.maxLength(10),
       ],
     ],
-    company: [this.data.beneficiary.company, [Validators.required]],
+    company: [this.data.beneficiary.company],
     enabled: [this.data.beneficiary.enabled, [Validators.required]],
     typeId: [this.data.beneficiary.typeId],
     description: [this.data.beneficiary.description],

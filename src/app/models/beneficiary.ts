@@ -5,7 +5,7 @@ export interface Beneficiary {
   telephone: string;
   enabled: boolean;
   typeId?: number;
-  company: BeneficiaryCompany;
+  company?: BeneficiaryCompany;
   description: string;
 }
 

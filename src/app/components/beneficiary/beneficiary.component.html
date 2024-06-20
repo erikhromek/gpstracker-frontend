@@ -136,7 +136,6 @@
       <mat-form-field>
         <mat-label>Compañía</mat-label>
         <mat-select formControlName="company" name="beneficiary-company">
-          <mat-option></mat-option>
           <mat-option
             *ngFor="let item of companyKeys; let indexCompanyKey = index"
             [value]="item"
