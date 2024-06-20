@@ -82,14 +82,14 @@
         }
       </mat-form-field>
       <mat-form-field>
-        <input
-          type="textarea"
+        <textarea
+          matInput
           rows="3"
           matInput
           placeholder="Descripción"
           name="beneficiary-description"
           formControlName="description"
-        />
+        ></textarea>
         @if (
           description?.invalid && (description?.dirty || description?.touched)
         ) {
