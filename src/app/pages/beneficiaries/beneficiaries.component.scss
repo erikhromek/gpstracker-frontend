@@ -1,0 +1,29 @@
+:host {
+    display: flex;
+    flex: 1;
+  }
+  
+  .beneficiaries-container {
+    width: 100%;
+  }
+  
+  .center {
+    display: flex;
+    justify-content: center;
+  }
+
+  .empty-data {
+    padding: 10px;
+    font-weight: bold;
+  }
+  
+  .new-item {
+    padding: 10px 0px;
+  }
+
+  .wrap-text {
+    font-size: 0.75em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }

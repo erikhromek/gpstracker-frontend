@@ -8,7 +8,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () =>
       import('./components/layout/layout.component').then(
-        (m) => m.LayoutComponent
+        (m) => m.LayoutComponent,
       ),
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'map' },
@@ -22,14 +22,21 @@ export const routes: Routes = [
         path: 'beneficiary-types',
         loadComponent: () =>
           import('./pages/beneficiary-types/beneficiary-types.component').then(
-            (m) => m.BeneficiaryTypesComponent
+            (m) => m.BeneficiaryTypesComponent,
           ),
       },
       {
         path: 'alert-types',
         loadComponent: () =>
           import('./pages/alert-types/alert-types.component').then(
-            (m) => m.AlertTypesComponent
+            (m) => m.AlertTypesComponent,
+          ),
+      },
+      {
+        path: 'beneficiaries',
+        loadComponent: () =>
+          import('./pages/beneficiaries/beneficiaries.component').then(
+            (m) => m.BeneficiariesComponent,
           ),
       },
     ],
@@ -43,14 +50,14 @@ export const routes: Routes = [
     path: 'register',
     loadComponent: () =>
       import('./pages/register/register.component').then(
-        (m) => m.RegisterComponent
+        (m) => m.RegisterComponent,
       ),
   },
   {
     path: 'reset-password',
     loadComponent: () =>
       import('./pages/reset-password/reset-password.component').then(
-        (m) => m.ResetPasswordComponent
+        (m) => m.ResetPasswordComponent,
       ),
   },
   {
