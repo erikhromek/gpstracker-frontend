@@ -1,0 +1,192 @@
+<h2 mat-dialog-title class="center modal-title">Beneficiario</h2>
+<mat-dialog-content>
+  <div class="inputs">
+    @if (errorMessages$ | async; as errorMessages) {
+      @if (errorMessages?.["detail"]) {}
+      <div class="server-error">
+        {{ errorMessages?.["detail"] }}
+      </div>
+    }
+    <form
+      class="beneficiary-form"
+      [formGroup]="beneficiaryForm"
+      (ngSubmit)="submit()"
+    >
+      <mat-form-field>
+        <input
+          type="text"
+          matInput
+          placeholder="Nombre"
+          name="beneficiary-name"
+          formControlName="name"
+        />
+        @if (name?.invalid && (name?.dirty || name?.touched)) {
+          <mat-error>
+            @if (name?.errors?.["required"]) {
+              Completar nombre
+            }
+            @if (name?.errors?.["serverError"]) {
+              @for (message of name?.errors?.["serverError"]; track message) {
+                {{ message }}
+              }
+            }
+          </mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field>
+        <input
+          type="text"
+          matInput
+          placeholder="Apellido"
+          name="beneficiary-surname"
+          formControlName="surname"
+        />
+        @if (surname?.invalid && (surname?.dirty || surname?.touched)) {
+          <mat-error>
+            @if (surname?.errors?.["required"]) {
+              Completar apellido
+            }
+            @if (surname?.errors?.["serverError"]) {
+              @for (
+                message of surname?.errors?.["serverError"];
+                track message
+              ) {
+                {{ message }}
+              }
+            }
+          </mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field>
+        <input
+          type="text"
+          matInput
+          placeholder="Teléfono"
+          name="beneficiary-telephone"
+          formControlName="telephone"
+        />
+        @if (telephone?.invalid && (telephone?.dirty || telephone?.touched)) {
+          <mat-error>
+            @if (telephone?.errors?.["required"]) {
+              Completar teléfono
+            }
+            @if (telephone?.errors?.["serverError"]) {
+              @for (
+                message of telephone?.errors?.["serverError"];
+                track message
+              ) {
+                {{ message }}
+              }
+            }
+          </mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field>
+        <input
+          type="textarea"
+          rows="3"
+          matInput
+          placeholder="Descripción"
+          name="beneficiary-description"
+          formControlName="description"
+        />
+        @if (
+          description?.invalid && (description?.dirty || description?.touched)
+        ) {
+          <mat-error>
+            @if (description?.errors?.["serverError"]) {
+              @for (
+                message of description?.errors?.["serverError"];
+                track message
+              ) {
+                {{ message }}
+              }
+            }
+          </mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Tipo beneficiario</mat-label>
+
+        <mat-select
+          placeholder="Tipo beneficiario"
+          name="beneficiary-typeId"
+          formControlName="typeId"
+        >
+          <mat-option></mat-option>
+          @for (
+            beneficiaryType of data.beneficiaryTypes;
+            track beneficiaryType.id
+          ) {
+            <mat-option [value]="beneficiaryType.id">{{
+              beneficiaryType.description
+            }}</mat-option>
+          }
+        </mat-select>
+        @if (typeId?.invalid && (typeId?.dirty || typeId?.touched)) {
+          <mat-error>
+            @if (typeId?.errors?.["serverError"]) {
+              @for (message of typeId?.errors?.["serverError"]; track message) {
+                {{ message }}
+              }
+            }
+          </mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Compañía</mat-label>
+        <mat-select formControlName="company" name="beneficiary-company">
+          <mat-option
+            *ngFor="let item of companyKeys; let indexCompanyKey = index"
+            [value]="item"
+          >
+            {{ companyValues[indexCompanyKey] }}
+          </mat-option>
+        </mat-select>
+        @if (company?.invalid && (company?.dirty || company?.touched)) {
+          <mat-error>
+            @if (company?.errors?.["serverError"]) {
+              @for (
+                message of company?.errors?.["serverError"];
+                track message
+              ) {
+                {{ message }}
+              }
+            }
+          </mat-error>
+        }
+      </mat-form-field>
+      <mat-checkbox
+        hidden
+        [checked]="enabled"
+        name="beneficiary-enabled"
+        formControlName="enabled"
+        >Activo</mat-checkbox
+      >
+      <!-- @if (enabled?.invalid && (enabled?.dirty || enabled?.touched)) {
+          <mat-error>
+            @if (enabled?.errors?.["serverError"]) {
+              @for (
+                message of enabled?.errors?.["serverError"];
+                track message
+              ) {
+                {{ message }}
+              }
+            }
+          </mat-error>
+        } -->
+
+      <div class="center">
+        <button mat-flat-button [mat-dialog-close]="false">Cerrar</button>
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="!beneficiaryForm.valid"
+        >
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</mat-dialog-content>

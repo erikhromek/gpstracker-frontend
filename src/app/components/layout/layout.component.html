@@ -14,7 +14,13 @@
         >
           <span>Mapa</span>
         </button>
-        <button mat-menu-item>
+        <button
+          mat-menu-item
+          [routerLink]="['/beneficiaries']"
+          routerLinkActive
+          #rlaBeneficiaries="routerLinkActive"
+          [disabled]="rlaBeneficiaries.isActive"
+        >
           <span>Beneficiarios</span>
         </button>
         <button mat-menu-item>
