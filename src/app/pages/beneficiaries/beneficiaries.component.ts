@@ -135,7 +135,7 @@ export class BeneficiariesComponent {
       telephone: '',
       enabled: true,
       typeId: null as unknown as number,
-      company: '',
+      company: 'OTH',
       description: '',
     };
     const dialogRef = this.dialog.open(BeneficiaryComponent, {
