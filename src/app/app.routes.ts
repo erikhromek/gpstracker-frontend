@@ -39,6 +39,13 @@ export const routes: Routes = [
             (m) => m.BeneficiariesComponent,
           ),
       },
+      {
+        path: 'alerts',
+        loadComponent: () =>
+          import('./pages/alerts/alerts.component').then(
+            (m) => m.AlertsComponent,
+          ),
+      },
     ],
   },
   {

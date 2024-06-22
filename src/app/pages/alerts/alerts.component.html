@@ -1,0 +1,117 @@
+<div class="beneficiaries-container">
+  <div class="table-container">
+    <div class="left"></div>
+    <ng-container *ngIf="(isLoading$ | async) === true">
+      <div class="center">
+        <mat-spinner></mat-spinner>
+      </div>
+    </ng-container>
+
+    <div class="row">
+      <span>
+        <mat-form-field>
+          <input
+            matInput
+            (input)="filterTable($event)"
+            placeholder="Filtrar por teléfono"
+          />
+        </mat-form-field>
+      </span>
+
+      <span>
+        <button
+          mat-icon-button
+          color="secondary"
+          aria-label="Exportar"
+          (click)="exportAlerts()"
+        >
+          <mat-icon>download</mat-icon>
+        </button>
+      </span>
+    </div>
+    <table
+      mat-table
+      matTableExporter
+      [dataSource]="(filteredData$ | async) ?? []"
+      #exporter="matTableExporter"
+      [hiddenColumns]="[6]"
+    >
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>ID</th>
+        <td mat-cell *matCellDef="let alert">{{ alert.id }}</td>
+      </ng-container>
+      <ng-container matColumnDef="datetime">
+        <th mat-header-cell *matHeaderCellDef>Fecha</th>
+        <td mat-cell *matCellDef="let alert">
+          {{ alert.datetime | date: "dd/MM/yyyy hh:mm a" }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="beneficiary">
+        <th mat-header-cell *matHeaderCellDef>Beneficiario</th>
+        <td mat-cell *matCellDef="let alert" class="text-wrap">
+          <div>{{ alert.beneficiaryName }}</div>
+          <div>{{ alert.telephone }}</div>
+          <div>{{ alert.beneficiaryDescription }}</div>
+          <div>{{ alert.beneficiaryTypeDescription }}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="location">
+        <th mat-header-cell *matHeaderCellDef>Ubicación</th>
+        <td mat-cell *matCellDef="let alert">
+          {{ alert.latitude }}, {{ alert.longitude }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="datetime_attended">
+        <th mat-header-cell *matHeaderCellDef>Fecha atención</th>
+        <td mat-cell *matCellDef="let alert">
+          {{ alert.datetimeAttended | date: "dd/MM/yyyy hh:mm a" }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="observations">
+        <th mat-header-cell *matHeaderCellDef>Observaciones</th>
+        <td mat-cell *matCellDef="let alert">
+          {{ alert.observations }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Acciones</th>
+        <td mat-cell *matCellDef="let alert">
+          <button
+            mat-icon-button
+            aria-label="Mostrar ubicación"
+            (click)="showMarker(alert)"
+          >
+            <mat-icon color="primary">location_on</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+      <tr
+        mat-row
+        [class.row-is-clicked]="clickedAlertId == row.id"
+        *matRowDef="let row; columns: columnsToDisplay"
+      ></tr>
+
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell empty-data">No hay datos</td>
+      </tr>
+    </table>
+    <div class="mat-spinner"></div>
+  </div>
+  <div class="map-container">
+    <div class="map-frame">
+      <div
+        id="map"
+        leaflet
+        (leafletMapReady)="onMapReady($event)"
+        [leafletOptions]="options"
+        [leafletLayers]="layers"
+      ></div>
+    </div>
+  </div>
+</div>
