@@ -23,7 +23,12 @@
         >
           <span>Beneficiarios</span>
         </button>
-        <button mat-menu-item>
+        <button
+          mat-menu-item
+          [routerLink]="['/alerts']"
+          routerLinkActive
+          #rlaAlerts="routerLinkActive"
+        >
           <span>Alertas</span>
         </button>
         <button
