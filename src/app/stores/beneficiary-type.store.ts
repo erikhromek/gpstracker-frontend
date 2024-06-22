@@ -40,7 +40,7 @@ export const BeneficiaryTypesStore = signalStore(
         }
       },
 
-      setBeneficiaryType(id: number): void {
+      setBeneficiaryType(id: number | null): void {
         patchState(store, { selectedEntityId: id });
       },
 

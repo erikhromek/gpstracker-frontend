@@ -1,11 +1,6 @@
 <div class="beneficiaries-container">
   <div class="table-container">
     <div class="left"></div>
-    <ng-container *ngIf="(isLoading$ | async) === true">
-      <div class="center">
-        <mat-spinner></mat-spinner>
-      </div>
-    </ng-container>
 
     <div class="row">
       <span>
@@ -32,7 +27,7 @@
     <table
       mat-table
       matTableExporter
-      [dataSource]="(filteredData$ | async) ?? []"
+      [dataSource]="dataSource"
       #exporter="matTableExporter"
       [hiddenColumns]="[6]"
     >
@@ -93,15 +88,27 @@
       <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
       <tr
         mat-row
-        [class.row-is-clicked]="clickedAlertId == row.id"
+        [class.row-is-clicked]="store.selectedEntity()?.id == row.id"
         *matRowDef="let row; columns: columnsToDisplay"
       ></tr>
 
       <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell empty-data">No hay datos</td>
+        @if (store.isFulfilled()) {
+          <td class="mat-cell empty-data" colspan="7">No hay datos</td>
+        }
       </tr>
     </table>
-    <div class="mat-spinner"></div>
+
+    <mat-paginator
+      [pageSize]="10"
+      aria-label="Seleccionar página"
+    ></mat-paginator>
+
+    @if (store.isPending() && !store.entities().length) {
+      <div class="table-spinner">
+        <mat-spinner></mat-spinner>
+      </div>
+    }
   </div>
   <div class="map-container">
     <div class="map-frame">

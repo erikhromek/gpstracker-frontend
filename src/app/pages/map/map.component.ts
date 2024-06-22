@@ -36,7 +36,7 @@ export class MapComponent implements OnDestroy {
   private readonly snackBar = inject(MatSnackBar);
   private readonly dialog = inject(MatDialog);
   private readonly zone = inject(NgZone);
-  public options = {
+  public readonly options = {
     layers: [
       tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 18,

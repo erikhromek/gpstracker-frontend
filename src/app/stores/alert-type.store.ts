@@ -39,7 +39,7 @@ export const AlertTypesStore = signalStore(
       }
     },
 
-    setAlertType(id: number): void {
+    setAlertType(id: number | null): void {
       patchState(store, { selectedEntityId: id });
     },
 

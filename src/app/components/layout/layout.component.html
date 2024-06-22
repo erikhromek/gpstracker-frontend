@@ -28,6 +28,7 @@
           [routerLink]="['/alerts']"
           routerLinkActive
           #rlaAlerts="routerLinkActive"
+          [disabled]="rlaAlerts.isActive"
         >
           <span>Alertas</span>
         </button>

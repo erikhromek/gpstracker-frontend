@@ -80,7 +80,7 @@ export const AlertsStore = signalStore(
         webSocketService.disconnect();
       },
 
-      setSelectedEntity(id: number): void {
+      setSelectedEntity(id: number | null): void {
         patchState(store, { selectedEntityId: id });
       },
 

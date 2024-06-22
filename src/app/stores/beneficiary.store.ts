@@ -45,7 +45,7 @@ export const BeneficiariesStore = signalStore(
       }
     },
 
-    setBeneficiary(id: number): void {
+    setBeneficiary(id: number | null): void {
       patchState(store, { selectedEntityId: id });
     },
 
