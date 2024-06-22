@@ -1,12 +1,12 @@
 <h2 mat-dialog-title class="center modal-title">Perfil</h2>
 <mat-dialog-content>
   <div class="inputs">
-    @if (errorMessages$ | async; as errorMessages) {
-      @if (errorMessages?.["detail"]) {}
+    @if (errorMessages() && errorMessages()["detail"]) {
       <div class="server-error">
-        {{ errorMessages?.["detail"] }}
+        {{ errorMessages()["detail"] }}
       </div>
     }
+
     <form class="profile-form" [formGroup]="profileForm" (ngSubmit)="submit()">
       <mat-form-field>
         <input
@@ -104,17 +104,19 @@
           </mat-error>
         }
       </mat-form-field>
-      <div class="center">
-        <button mat-flat-button type="button" (click)="closeModal()">
-          Cerrar
-        </button>
+      <div class="center actions">
+        <button mat-flat-button type="button" [mat-dialog-close]>Cerrar</button>
         <button
           mat-flat-button
           color="primary"
           type="submit"
-          [disabled]="!profileForm.valid"
+          [disabled]="!profileForm.valid && store.isPending()"
         >
-          Modificar
+          @if (store.isPending()) {
+            <mat-spinner color="accent" [diameter]="20"></mat-spinner>
+          } @else {
+            Modificar
+          }
         </button>
       </div>
     </form>

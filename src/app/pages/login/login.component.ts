@@ -3,6 +3,7 @@ import {
   Component,
   DestroyRef,
   inject,
+  signal,
 } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import {
@@ -20,9 +21,10 @@ import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthUser } from '../../models/auth-user';
 import { ServerError } from '../../models/server-error';
-import { BehaviorSubject, EMPTY, catchError } from 'rxjs';
+import { EMPTY, catchError } from 'rxjs';
 import { NgOptimizedImage } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { handleFormErrors } from '../../misc/handle-form-errors';
 
 @Component({
   selector: 'app-login',
@@ -43,71 +45,50 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
-  private destroyRef = inject(DestroyRef);
-  loginForm = this.fb.group({
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly authService = inject(AuthService);
+  private readonly fb = inject(FormBuilder);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  public loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
   });
-  errorMessages$ = new BehaviorSubject<ServerError>({});
-
-  constructor(
-    private authService: AuthService,
-    private fb: FormBuilder,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {}
+  public errorMessages = signal<ServerError>({});
 
   ngOnInit() {
     this.checkSession();
   }
 
-  get email() {
+  public get email() {
     return this.loginForm.get('email');
   }
 
-  get password() {
+  public get password() {
     return this.loginForm.get('password');
   }
 
-  checkSession(): void {
+  private checkSession(): void {
     this.authService.isLoggedIn() ? this.router.navigateByUrl('/map') : false;
   }
 
-  submit(): void {
+  public submit(): void {
     if (this.loginForm.valid) {
-      this.errorMessages$.next({});
+      this.errorMessages.set({});
       this.authService
         .login(this.loginForm.value as AuthUser)
         .pipe(
           takeUntilDestroyed(this.destroyRef),
           catchError((error: HttpErrorResponse) => {
-            this.handleErrors(error);
+            handleFormErrors(this.loginForm, error, this.errorMessages);
             return EMPTY;
-          })
+          }),
         )
         .subscribe(() => {
           const returnUrl =
             this.route.snapshot.queryParams['returnUrl'] || '/map';
           this.router.navigateByUrl(returnUrl);
         });
-    }
-  }
-
-  handleErrors(error: HttpErrorResponse): void {
-    this.loginForm.setErrors({ invalid: true });
-    if (error.error) {
-      this.errorMessages$.next(error.error as ServerError);
-
-      Object.keys(this.errorMessages$.value).forEach((key) => {
-        const control = this.loginForm.get(key);
-        if (control) {
-          control.setErrors({ serverError: this.errorMessages$.value[key] });
-          control.markAsTouched();
-          control.markAsDirty();
-        }
-      });
-    } else {
-      this.errorMessages$.next({ detail: 'Ha ocurrido un error inesperado' });
     }
   }
 }

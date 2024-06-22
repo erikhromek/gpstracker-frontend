@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthUser } from '../models/auth-user';
 import { environment } from '../../environments/environment';
@@ -9,22 +9,21 @@ import { CreatedUser } from '../models/created-user';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  apiUrl = `${environment.apiUrl}`;
+  private readonly apiUrl = `${environment.apiUrl}`;
+  private readonly httpClient = inject(HttpClient);
 
-  constructor(private httpClient: HttpClient) {}
-
-  login(user: AuthUser): Observable<AuthToken> {
+  public login(user: AuthUser): Observable<AuthToken> {
     return this.httpClient.post<AuthToken>(`${this.apiUrl}/token/`, user).pipe(
       tap((authToken: AuthToken) => {
         this.setSession(authToken);
-      })
+      }),
     );
   }
 
-  register(user: RegisterUser): Observable<CreatedUser> {
+  public register(user: RegisterUser): Observable<CreatedUser> {
     return this.httpClient.post<RegisterUser>(
       `${this.apiUrl}/users/admin/`,
-      user
+      user,
     );
   }
 
@@ -33,16 +32,16 @@ export class AuthService {
     localStorage.setItem('refresh', authToken.refresh);
   }
 
-  isLoggedIn(): boolean {
+  public isLoggedIn(): boolean {
     return localStorage.getItem('access') ? true : false;
   }
 
-  logout(): void {
+  public logout(): void {
     localStorage.removeItem('access');
     localStorage.removeItem('refresh');
   }
 
-  refreshToken(): Observable<AuthToken> {
+  public refreshToken(): Observable<AuthToken> {
     return this.httpClient
       .post<AuthToken>(`${this.apiUrl}/token/refresh/`, {
         refresh: this.getRefreshToken(),
@@ -50,11 +49,11 @@ export class AuthService {
       .pipe(
         tap((authToken: AuthToken) => {
           this.setSession(authToken);
-        })
+        }),
       );
   }
 
-  getRefreshToken(): string | null {
+  public getRefreshToken(): string | null {
     return localStorage.getItem('refresh');
   }
 

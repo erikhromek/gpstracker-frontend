@@ -1,48 +1,51 @@
-@if (alerts$ | async; as alerts) {
-  <div class="alerts-container">
-    <mat-list role="list">
-      <div mat-subheader>Últimas alertas</div>
-      <mat-divider></mat-divider>
+<div class="alerts-container">
+  <mat-list role="list">
+    <div mat-subheader>Últimas alertas</div>
+    <mat-divider></mat-divider>
 
-      @for (alert of alerts; track alert.id; let e = $even) {
-        <mat-list-item role="listitem">
-          <span matListItemTitle>
-            <span
-              class="dot-grey"
-              [ngClass]="
-                alert.state === alertStates.N
-                  ? 'dot-red'
-                  : alert.state === alertStates.A
-                    ? 'dot-orange'
-                    : 'dot-grey'
-              "
-            ></span>
+    <mat-list-item role="listitem">
+      <button mat-flat-button (click)="createAlertsDummies()">
+        Crear alertas dummy
+      </button>
+    </mat-list-item>
+    @for (alert of store.sortedEntities(); track alert.id; let e = $even) {
+      <mat-list-item role="listitem">
+        <span matListItemTitle>
+          <span
+            class="dot-grey"
+            [ngClass]="
+              alert.state === AlertState.N
+                ? 'dot-red'
+                : alert.state === AlertState.A
+                  ? 'dot-orange'
+                  : 'dot-grey'
+            "
+          ></span>
 
-            {{ alert.datetime | date: "dd/MM/yyyy hh:mm a" }}
-          </span>
-          <span matListItemLine>
-            {{ alert.beneficiaryName }} {{ alert.telephone }}
-          </span>
-        </mat-list-item>
+          {{ alert.datetime | date: "dd/MM/yyyy hh:mm a" }}
+        </span>
+        <span matListItemLine>
+          {{ alert.beneficiaryName }} {{ alert.telephone }}
+        </span>
+      </mat-list-item>
 
-        @if (e) {
-          <mat-divider></mat-divider>
-        }
-      } @empty {
-        <mat-list-item role="listitem">No hay alertas</mat-list-item>
+      @if (e) {
+        <mat-divider></mat-divider>
       }
-    </mat-list>
-  </div>
+    } @empty {
+      <mat-list-item role="listitem">No hay alertas</mat-list-item>
+    }
+  </mat-list>
+</div>
 
-  <div class="map-container">
-    <div class="map-frame">
-      <div
-        id="map"
-        leaflet
-        (leafletMapReady)="onMapReady($event)"
-        [leafletOptions]="options"
-        [leafletLayers]="layers"
-      ></div>
-    </div>
+<div class="map-container">
+  <div class="map-frame">
+    <div
+      id="map"
+      leaflet
+      (leafletMapReady)="onMapReady($event)"
+      [leafletOptions]="options"
+      [leafletLayers]="layers"
+    ></div>
   </div>
-}
+</div>

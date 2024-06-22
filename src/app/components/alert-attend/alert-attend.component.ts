@@ -1,17 +1,15 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
-  Inject,
-  OnInit,
+  effect,
   inject,
+  signal,
 } from '@angular/core';
 import { Alert, AlertState } from '../../models/alert';
 import {
   MAT_DIALOG_DATA,
-  MatDialogContent,
+  MatDialogModule,
   MatDialogRef,
-  MatDialogTitle,
 } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { AlertStatePipe } from '../../pipes/alert-state.pipe';
@@ -21,40 +19,43 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { BehaviorSubject, EMPTY, Observable, catchError, tap } from 'rxjs';
 import { ServerError } from '../../models/server-error';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { HttpErrorResponse } from '@angular/common/http';
-import { AlertService } from '../../services/alert.service';
-import { AlertTypeService } from '../../services/alert-type.service';
-import { AlertType } from '../../models/alert-type';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { handleFormErrors } from '../../misc/handle-form-errors';
+import { AlertsStore } from '../../stores/alert.store';
+import { AlertTypesStore } from '../../stores/alert-type.store';
 
 @Component({
   selector: 'app-alert-attend',
   standalone: true,
   imports: [
     CommonModule,
-    MatDialogTitle,
-    MatDialogContent,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatButtonModule,
     MatInputModule,
     FormsModule,
     MatSelectModule,
+    MatProgressSpinnerModule,
+    MatDialogModule,
   ],
   providers: [AlertStatePipe],
   templateUrl: './alert-attend.component.html',
   styleUrl: './alert-attend.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AlertAttendComponent implements OnInit {
-  private destroyRef = inject(DestroyRef);
-  alertForm = this.fb.group({
+export class AlertAttendComponent {
+  public readonly storeAlerts = inject(AlertsStore);
+  public readonly storeAlertTypes = inject(AlertTypesStore);
+  public readonly alert: Alert = inject(MAT_DIALOG_DATA);
+  private readonly dialogRef = inject(MatDialogRef<AlertAttendComponent>);
+  private readonly fb = inject(FormBuilder);
+  private readonly alertStatePipe = inject(AlertStatePipe);
+  public alertForm = this.fb.group({
     beneficiaryName: [{ value: '', disabled: true }, Validators.required],
     telephone: [{ value: '', disabled: true }, Validators.required],
     beneficiaryDescription: [
@@ -62,28 +63,23 @@ export class AlertAttendComponent implements OnInit {
       Validators.required,
     ],
     beneficiaryTypeDescription: [{ value: '', disabled: true }],
-    typeId: [{ value: 0, disabled: true }],
+    typeId: [{ value: null as unknown as number, disabled: true }],
     state: [{ value: '', disabled: true }, Validators.required],
     observations: [{ value: '', disabled: true }],
   });
-  alertTypes$!: Observable<AlertType[]>;
-  errorMessages$ = new BehaviorSubject<ServerError>({});
-  alertStates = AlertState;
+  public errorMessages = signal<ServerError>({});
+  public AlertState = AlertState;
 
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public alert: Alert,
-    private dialogRef: MatDialogRef<AlertAttendComponent>,
-    private fb: FormBuilder,
-    private alertService: AlertService,
-    private alertTypeService: AlertTypeService,
-    private alertStatePipe: AlertStatePipe
-  ) {}
-
-  ngOnInit(): void {
-    this.getAlertTypes();
+  constructor() {
+    effect(() => {
+      const alertTypes = this.storeAlertTypes.entities();
+      if (alertTypes) {
+        this.patchFormValues();
+      }
+    });
   }
 
-  patchFormValues(): void {
+  private patchFormValues(): void {
     this.alertForm.patchValue(this.alert);
     if (this.alert.state === AlertState.A) {
       this.alertForm.get('typeId')?.enable();
@@ -92,87 +88,48 @@ export class AlertAttendComponent implements OnInit {
     this.state?.setValue(this.alertStatePipe.transform(this.alert.state));
   }
 
-  private getAlertTypes(): void {
-    this.alertTypes$ = this.alertTypeService.getAlertTypes().pipe(
-      tap(() => {
-        this.patchFormValues();
-      })
-    );
-  }
-
-  get beneficiaryName() {
+  public get beneficiaryName() {
     return this.alertForm.get('beneficiaryName');
   }
 
-  get telephone() {
+  public get telephone() {
     return this.alertForm.get('telephone');
   }
 
-  get beneficiaryDescription() {
+  public get beneficiaryDescription() {
     return this.alertForm.get('beneficiaryDescription');
   }
 
-  get beneficiaryTypeDescription() {
+  public get beneficiaryTypeDescription() {
     return this.alertForm.get('beneficiaryTypeDescription');
   }
 
-  get typeId() {
+  public get typeId() {
     return this.alertForm.get('typeId');
   }
 
-  get state() {
+  public get state() {
     return this.alertForm.get('state');
   }
 
-  get observations() {
+  public get observations() {
     return this.alertForm.get('observations');
   }
 
-  closeModal(): void {
-    this.dialogRef.close();
-  }
-
-  submit(): void {
-    this.errorMessages$.next({});
+  public async submit(): Promise<void> {
+    this.errorMessages.set({});
 
     const alertUpdated = { ...this.alert, ...this.alertForm.value } as Alert;
     alertUpdated.state =
       this.alert.state === AlertState.A ? AlertState.C : AlertState.A;
-    console.log(alertUpdated);
 
-    this.alertService
-      .updateAlert(alertUpdated)
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        catchError((error: HttpErrorResponse) => {
-          if (error.status === 400) {
-            this.handleErrors(error);
-          } else {
-            this.dialogRef.close();
-          }
-          return EMPTY;
-        })
-      )
-      .subscribe(() => {
-        this.dialogRef.close();
-      });
-  }
+    await this.storeAlerts.updateAlert(alertUpdated);
 
-  handleErrors(error: HttpErrorResponse): void {
-    this.alertForm.setErrors({ invalid: true });
-    if (error.error) {
-      this.errorMessages$.next(error.error as ServerError);
-
-      Object.keys(this.errorMessages$.value).forEach((key) => {
-        const control = this.alertForm.get(key);
-        if (control) {
-          control.setErrors({ serverError: this.errorMessages$.value[key] });
-          control.markAsTouched();
-          control.markAsDirty();
-        }
-      });
+    const httpError = this.storeAlerts.error();
+    if (httpError && httpError.status === 400) {
+      handleFormErrors(this.alertForm, httpError, this.errorMessages);
     } else {
-      this.errorMessages$.next({ detail: 'Ha ocurrido un error inesperado' });
+      this.dialogRef.close(true);
     }
   }
 }

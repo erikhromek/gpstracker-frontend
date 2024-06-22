@@ -35,7 +35,13 @@
         >
           <span>Tipos de beneficiario</span>
         </button>
-        <button mat-menu-item [routerLink]="['/alert-types']">
+        <button
+          mat-menu-item
+          [routerLink]="['/alert-types']"
+          routerLinkActive
+          #rlaAlertTypes="routerLinkActive"
+          [disabled]="rlaAlertTypes.isActive"
+        >
           <span>Tipos de alerta</span>
         </button>
         <!-- TODO: implementar

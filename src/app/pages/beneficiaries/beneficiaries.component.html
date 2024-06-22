@@ -1,10 +1,4 @@
 <div class="beneficiaries-container">
-  <ng-container *ngIf="(isLoading$ | async) === true">
-    <div class="center">
-      <mat-spinner></mat-spinner>
-    </div>
-  </ng-container>
-
   <div class="new-item">
     <button
       mat-icon-button
@@ -23,7 +17,7 @@
       placeholder="Filtrar por teléfono"
     />
   </mat-form-field>
-  <table mat-table [dataSource]="(filteredData$ | async) ?? []">
+  <table mat-table [dataSource]="dataSource">
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef>ID</th>
       <td mat-cell *matCellDef="let beneficiary">{{ beneficiary.id }}</td>
@@ -55,7 +49,10 @@
     <ng-container matColumnDef="typeId">
       <th mat-header-cell *matHeaderCellDef>Tipo beneficiario</th>
       <td mat-cell *matCellDef="let beneficiary">
-        {{ beneficiary.typeId | beneficiaryType: this.beneficiaryTypes }}
+        {{
+          beneficiary.typeId
+            | beneficiaryType: this.storeBeneficiaryTypes.entities()
+        }}
       </td>
     </ng-container>
 
@@ -87,7 +84,7 @@
           <button
             mat-icon-button
             aria-label="Desactivar"
-            (click)="openDeleteModal(beneficiary.id)"
+            (click)="toggleBeneficiary(beneficiary.id, beneficiary.enabled)"
           >
             <mat-icon color="warn">close</mat-icon>
           </button>
@@ -95,22 +92,30 @@
           <button
             mat-icon-button
             aria-label="Reactivar"
-            (click)="openEnableModal(beneficiary.id)"
+            (click)="toggleBeneficiary(beneficiary.id, beneficiary.enabled)"
           >
             <mat-icon color="primary">done</mat-icon>
           </button>
         }
       </mat-cell>
     </ng-container>
-    <mat-paginator
-      [pageSize]="10"
-      aria-label="Seleccionar página"
-    ></mat-paginator>
     <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
     <tr mat-row *matRowDef="let row; columns: columnsToDisplay"></tr>
 
     <tr class="mat-row" *matNoDataRow>
-      <td class="mat-cell empty-data">No hay datos</td>
+      @if (store.isFulfilled()) {
+        <td class="mat-cell empty-data" colspan="9">No hay datos</td>
+      }
     </tr>
   </table>
+  <mat-paginator
+    [pageSize]="10"
+    aria-label="Seleccionar página"
+  ></mat-paginator>
+
+  @if (store.isPending() && !store.entities().length) {
+    <div class="table-spinner">
+      <mat-spinner></mat-spinner>
+    </div>
+  }
 </div>

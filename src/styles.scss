@@ -6,9 +6,15 @@ body {
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+  overflow-y: hidden;
 }
 
 .leaflet-marker-icon {
   height: 41px !important;
   width: 41px !important;
+}
+
+.snackbar-notification {
+  margin-top: 130px !important;
+  margin-right: 30px !important;
 }
