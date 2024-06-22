@@ -1,215 +1,211 @@
-@if (alertTypes$ | async; as alertTypes) {
-  <h2 mat-dialog-title class="center modal-title">
-    {{ alert.datetime | date: "dd/MM/yyyy hh:mm a" }}
-  </h2>
-  <mat-dialog-content>
-    <div class="inputs">
-      @if (errorMessages$ | async; as errorMessages) {
-        @if (errorMessages?.["detail"]) {}
-        <div class="server-error">
-          {{ errorMessages?.["detail"] }}
-        </div>
-      }
-      <form class="alert-form" [formGroup]="alertForm" (ngSubmit)="submit()">
-        <mat-form-field>
-          <mat-label>Beneficiario</mat-label>
-          <input
-            matInput
-            placeholder="Beneficiario"
-            name="alert-beneficiaryName"
-            formControlName="beneficiaryName"
-          />
-          @if (
-            beneficiaryName?.invalid &&
-            (beneficiaryName?.dirty || beneficiaryName?.touched)
-          ) {
-            <mat-error>
-              @if (beneficiaryName?.errors?.["required"]) {
-                Completar organización
-              }
-              @if (beneficiaryName?.errors?.["serverError"]) {
-                @for (
-                  message of beneficiaryName?.errors?.["serverError"];
-                  track message
-                ) {
-                  {{ message }}
-                }
-              }
-            </mat-error>
-          }
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Teléfono</mat-label>
-          <input
-            matInput
-            placeholder="Teléfono"
-            name="alert-telephone"
-            formControlName="telephone"
-          />
-          @if (telephone?.invalid && (telephone?.dirty || telephone?.touched)) {
-            <mat-error>
-              @if (telephone?.errors?.["required"]) {
-                Completar el teléfono
-              }
-              @if (telephone?.errors?.["serverError"]) {
-                @for (
-                  message of telephone?.errors?.["serverError"];
-                  track message
-                ) {
-                  {{ message }}
-                }
-              }
-            </mat-error>
-          }
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Tipo beneficiario</mat-label>
-          <input
-            matInput
-            placeholder="Tipo beneficiario"
-            name="alert-beneficiaryDescription"
-            formControlName="beneficiaryDescription"
-          />
-          @if (
-            beneficiaryDescription?.invalid &&
-            (beneficiaryDescription?.dirty || beneficiaryDescription?.touched)
-          ) {
-            <mat-error>
-              @if (beneficiaryDescription?.errors?.["required"]) {
-                Completar el tipo de beneficiario
-              }
-              @if (beneficiaryDescription?.errors?.["serverError"]) {
-                @for (
-                  message of beneficiaryDescription?.errors?.["serverError"];
-                  track message
-                ) {
-                  {{ message }}
-                }
-              }
-            </mat-error>
-          }
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Descripción</mat-label>
-          <input
-            matInput
-            placeholder="Descripción"
-            name="alert-beneficiaryTypeDescription"
-            formControlName="beneficiaryTypeDescription"
-          />
-          @if (
-            beneficiaryTypeDescription?.invalid &&
-            (beneficiaryTypeDescription?.dirty ||
-              beneficiaryTypeDescription?.touched)
-          ) {
-            <mat-error>
-              @if (beneficiaryTypeDescription?.errors?.["required"]) {
-                Completar la descripción
-              }
-              @if (beneficiaryTypeDescription?.errors?.["serverError"]) {
-                @for (
-                  message of beneficiaryTypeDescription?.errors?.[
-                    "serverError"
-                  ];
-                  track message
-                ) {
-                  {{ message }}
-                }
-              }
-            </mat-error>
-          }
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Tipo alerta</mat-label>
-          <mat-select
-            placeholder="Tipo alerta"
-            name="alert-typeId"
-            formControlName="typeId"
-          >
-            <mat-option></mat-option>
-            @for (alertType of alertTypes; track alertType.id) {
-              <mat-option [value]="alertType.id">{{
-                alertType.description
-              }}</mat-option>
+<h2 mat-dialog-title class="center modal-title">
+  {{ alert.datetime | date: "dd/MM/yyyy hh:mm a" }}
+</h2>
+<mat-dialog-content>
+  <div class="inputs">
+    @if (errorMessages() && errorMessages()["detail"]) {
+      <div class="server-error">
+        {{ errorMessages()["detail"] }}
+      </div>
+    }
+    <form class="alert-form" [formGroup]="alertForm" (ngSubmit)="submit()">
+      <mat-form-field>
+        <mat-label>Beneficiario</mat-label>
+        <input
+          matInput
+          placeholder="Beneficiario"
+          name="alert-beneficiaryName"
+          formControlName="beneficiaryName"
+        />
+        @if (
+          beneficiaryName?.invalid &&
+          (beneficiaryName?.dirty || beneficiaryName?.touched)
+        ) {
+          <mat-error>
+            @if (beneficiaryName?.errors?.["required"]) {
+              Completar organización
             }
-          </mat-select>
-          @if (typeId?.invalid && (typeId?.dirty || typeId?.touched)) {
-            <mat-error>
-              @if (typeId?.errors?.["serverError"]) {
-                @for (
-                  message of typeId?.errors?.["serverError"];
-                  track message
-                ) {
-                  {{ message }}
-                }
+            @if (beneficiaryName?.errors?.["serverError"]) {
+              @for (
+                message of beneficiaryName?.errors?.["serverError"];
+                track message
+              ) {
+                {{ message }}
               }
-            </mat-error>
+            }
+          </mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Teléfono</mat-label>
+        <input
+          matInput
+          placeholder="Teléfono"
+          name="alert-telephone"
+          formControlName="telephone"
+        />
+        @if (telephone?.invalid && (telephone?.dirty || telephone?.touched)) {
+          <mat-error>
+            @if (telephone?.errors?.["required"]) {
+              Completar el teléfono
+            }
+            @if (telephone?.errors?.["serverError"]) {
+              @for (
+                message of telephone?.errors?.["serverError"];
+                track message
+              ) {
+                {{ message }}
+              }
+            }
+          </mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Tipo beneficiario</mat-label>
+        <input
+          matInput
+          placeholder="Tipo beneficiario"
+          name="alert-beneficiaryDescription"
+          formControlName="beneficiaryDescription"
+        />
+        @if (
+          beneficiaryDescription?.invalid &&
+          (beneficiaryDescription?.dirty || beneficiaryDescription?.touched)
+        ) {
+          <mat-error>
+            @if (beneficiaryDescription?.errors?.["required"]) {
+              Completar el tipo de beneficiario
+            }
+            @if (beneficiaryDescription?.errors?.["serverError"]) {
+              @for (
+                message of beneficiaryDescription?.errors?.["serverError"];
+                track message
+              ) {
+                {{ message }}
+              }
+            }
+          </mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Descripción</mat-label>
+        <input
+          matInput
+          placeholder="Descripción"
+          name="alert-beneficiaryTypeDescription"
+          formControlName="beneficiaryTypeDescription"
+        />
+        @if (
+          beneficiaryTypeDescription?.invalid &&
+          (beneficiaryTypeDescription?.dirty ||
+            beneficiaryTypeDescription?.touched)
+        ) {
+          <mat-error>
+            @if (beneficiaryTypeDescription?.errors?.["required"]) {
+              Completar la descripción
+            }
+            @if (beneficiaryTypeDescription?.errors?.["serverError"]) {
+              @for (
+                message of beneficiaryTypeDescription?.errors?.["serverError"];
+                track message
+              ) {
+                {{ message }}
+              }
+            }
+          </mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Tipo alerta</mat-label>
+        <mat-select
+          placeholder="Tipo alerta"
+          name="alert-typeId"
+          formControlName="typeId"
+        >
+          <mat-option></mat-option>
+          @for (alertType of storeAlertTypes.entities(); track alertType.id) {
+            <mat-option [value]="alertType.id">{{
+              alertType.description
+            }}</mat-option>
           }
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Estado</mat-label>
-          <input
-            matInput
-            placeholder="Estado"
-            name="alert-state"
-            formControlName="state"
-          />
-          @if (state?.invalid && (state?.dirty || state?.touched)) {
-            <mat-error>
-              @if (state?.errors?.["required"]) {
-                Completar el estado de la alerta
+        </mat-select>
+        @if (typeId?.invalid && (typeId?.dirty || typeId?.touched)) {
+          <mat-error>
+            @if (typeId?.errors?.["serverError"]) {
+              @for (message of typeId?.errors?.["serverError"]; track message) {
+                {{ message }}
               }
-              @if (state?.errors?.["serverError"]) {
-                @for (
-                  message of state?.errors?.["serverError"];
-                  track message
-                ) {
-                  {{ message }}
-                }
+            }
+          </mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Estado</mat-label>
+        <input
+          matInput
+          placeholder="Estado"
+          name="alert-state"
+          formControlName="state"
+        />
+        @if (state?.invalid && (state?.dirty || state?.touched)) {
+          <mat-error>
+            @if (state?.errors?.["required"]) {
+              Completar el estado de la alerta
+            }
+            @if (state?.errors?.["serverError"]) {
+              @for (message of state?.errors?.["serverError"]; track message) {
+                {{ message }}
               }
-            </mat-error>
-          }
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Observaciones</mat-label>
-          <textarea
-            matInput
-            placeholder="Observaciones"
-            name="alert-observations"
-            formControlName="observations"
-          ></textarea>
-          @if (
-            observations?.invalid &&
-            (observations?.dirty || observations?.touched)
-          ) {
-            <mat-error>
-              @if (observations?.errors?.["serverError"]) {
-                @for (
-                  message of observations?.errors?.["serverError"];
-                  track message
-                ) {
-                  {{ message }}
-                }
+            }
+          </mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Observaciones</mat-label>
+        <textarea
+          matInput
+          placeholder="Observaciones"
+          name="alert-observations"
+          formControlName="observations"
+        ></textarea>
+        @if (
+          observations?.invalid &&
+          (observations?.dirty || observations?.touched)
+        ) {
+          <mat-error>
+            @if (observations?.errors?.["serverError"]) {
+              @for (
+                message of observations?.errors?.["serverError"];
+                track message
+              ) {
+                {{ message }}
               }
-            </mat-error>
-          }
-        </mat-form-field>
+            }
+          </mat-error>
+        }
+      </mat-form-field>
 
-        @if (alert.state !== alertStates.C) {
-          <div class="center">
-            <button mat-flat-button type="button" (click)="closeModal()">
-              Cerrar
-            </button>
-            <button mat-flat-button color="primary" type="submit">
-              @if (alert.state == alertStates.A) {
+      <div class="center actions">
+        <button mat-flat-button type="button" [mat-dialog-close]>Cerrar</button>
+        @if (alert.state !== AlertState.C) {
+          <button
+            mat-flat-button
+            color="primary"
+            type="submit"
+            [disabled]="storeAlerts.isPending()"
+          >
+            @if (storeAlerts.isPending()) {
+              <mat-spinner color="accent" [diameter]="20"></mat-spinner>
+            } @else {
+              @if (alert.state == AlertState.A) {
                 Cerrar alerta
               } @else {
                 Atender alerta
               }
-            </button>
-          </div>
+            }
+          </button>
         }
-      </form>
-    </div>
-  </mat-dialog-content>
-}
+      </div>
+    </form>
+  </div>
+</mat-dialog-content>

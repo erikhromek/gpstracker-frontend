@@ -1,12 +1,12 @@
 <h2 mat-dialog-title class="center modal-title">Beneficiario</h2>
 <mat-dialog-content>
   <div class="inputs">
-    @if (errorMessages$ | async; as errorMessages) {
-      @if (errorMessages?.["detail"]) {}
+    @if (errorMessages() && errorMessages()["detail"]) {
       <div class="server-error">
-        {{ errorMessages?.["detail"] }}
+        {{ errorMessages()["detail"] }}
       </div>
     }
+
     <form
       class="beneficiary-form"
       [formGroup]="beneficiaryForm"
@@ -69,6 +69,13 @@
           <mat-error>
             @if (telephone?.errors?.["required"]) {
               Completar teléfono
+            }
+            @if (
+              telephone?.errors?.["pattern"] ||
+              telephone?.errors?.["minlength"] ||
+              telephone?.errors?.["maxlength"]
+            ) {
+              El teléfono ingresado es inválido
             }
             @if (telephone?.errors?.["serverError"]) {
               @for (
@@ -163,28 +170,19 @@
         formControlName="enabled"
         >Activo</mat-checkbox
       >
-      <!-- @if (enabled?.invalid && (enabled?.dirty || enabled?.touched)) {
-          <mat-error>
-            @if (enabled?.errors?.["serverError"]) {
-              @for (
-                message of enabled?.errors?.["serverError"];
-                track message
-              ) {
-                {{ message }}
-              }
-            }
-          </mat-error>
-        } -->
-
-      <div class="center">
+      <div class="center actions">
         <button mat-flat-button [mat-dialog-close]="false">Cerrar</button>
         <button
           mat-flat-button
           color="primary"
           type="submit"
-          [disabled]="!beneficiaryForm.valid"
+          [disabled]="!beneficiaryForm.valid && store.isPending()"
         >
-          Guardar
+          @if (store.isPending()) {
+            <mat-spinner color="accent" [diameter]="20"></mat-spinner>
+          } @else {
+            Guardar
+          }
         </button>
       </div>
     </form>

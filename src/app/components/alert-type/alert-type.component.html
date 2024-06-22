@@ -1,10 +1,9 @@
 <h2 mat-dialog-title class="center modal-title">Tipo de alerta</h2>
 <mat-dialog-content>
   <div class="inputs">
-    @if (errorMessages$ | async; as errorMessages) {
-      @if (errorMessages?.["detail"]) {}
+    @if (errorMessages() && errorMessages()["detail"]) {
       <div class="server-error">
-        {{ errorMessages?.["detail"] }}
+        {{ errorMessages()["detail"] }}
       </div>
     }
     <form
@@ -65,9 +64,13 @@
           mat-flat-button
           color="primary"
           type="submit"
-          [disabled]="!alertTypeForm.valid"
+          [disabled]="!alertTypeForm.valid && store.isPending()"
         >
-          Guardar
+          @if (store.isPending()) {
+            <mat-spinner color="accent" [diameter]="20"></mat-spinner>
+          } @else {
+            Guardar
+          }
         </button>
       </div>
     </form>

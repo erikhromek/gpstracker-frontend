@@ -1,9 +1,12 @@
 .center {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-  }
+  display: flex;
+  justify-content: center;
+}
 
- .modal-title {
-    margin-top: 15px;
- }
+.modal-title {
+  margin-top: 15px;
+}
+
+.actions {
+  gap: 15px;
+}

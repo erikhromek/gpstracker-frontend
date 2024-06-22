@@ -1,10 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCard, MatCardModule } from '@angular/material/card';
+import { MatCardModule } from '@angular/material/card';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-error',
@@ -15,10 +19,8 @@ import { BehaviorSubject } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ErrorComponent {
-  error$: BehaviorSubject<HttpErrorResponse> =
-    new BehaviorSubject<HttpErrorResponse>({} as HttpErrorResponse);
-
-  constructor(private route: ActivatedRoute) {}
+  private route = inject(ActivatedRoute);
+  public error = signal<HttpErrorResponse>({} as HttpErrorResponse);
 
   ngOnInit(): void {
     this.createError();
@@ -85,6 +87,6 @@ export class ErrorComponent {
         break;
     }
 
-    this.error$.next(error);
+    this.error.set(error);
   }
 }

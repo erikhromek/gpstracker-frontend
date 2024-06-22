@@ -15,13 +15,13 @@ import {
   map,
   switchMap,
   take,
-  tap,
   throwError,
 } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { AuthToken } from '../models/auth-token';
 import snakecaseKeys from 'snakecase-keys';
 import camelcaseKeys from 'camelcase-keys';
+import { retryBackoff } from 'backoff-rxjs';
 
 export const authInterceptor: HttpInterceptorFn = (request, next) => {
   let isRefreshing = false;
@@ -40,6 +40,13 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
         return response;
       }
     }),
+    retryBackoff({
+      initialInterval: 100,
+      maxRetries: 4,
+      shouldRetry: (error) => {
+        return error.status !== 401 && error.status !== 400;
+      },
+    }),
     catchError((error) => {
       if (error.status == 401) {
         if (authService.isLoggedIn()) {
@@ -49,7 +56,7 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
             isRefreshing,
             authService,
             router,
-            accessToken$
+            accessToken$,
           );
         } else {
           redirectToLogin(router);
@@ -61,13 +68,13 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
         router.navigate(['/error/' + error.status]);
         return throwError(() => error);
       }
-    })
+    }),
   );
 };
 
 function addHeaders(
   request: HttpRequest<unknown>,
-  token: string | null
+  token: string | null,
 ): HttpRequest<unknown> {
   return request.clone({
     body: request.body ? snakecaseKeys(request.body as {}) : request.body,
@@ -83,7 +90,7 @@ function handleError401(
   isRefreshing: boolean,
   authService: AuthService,
   router: Router,
-  accessToken$: BehaviorSubject<string | null>
+  accessToken$: BehaviorSubject<string | null>,
 ): Observable<HttpEvent<unknown>> {
   if (!isRefreshing) {
     isRefreshing = true;
@@ -100,13 +107,13 @@ function handleError401(
         authService.logout();
         redirectToLogin(router);
         return throwError(() => error);
-      })
+      }),
     );
   } else {
     return accessToken$.pipe(
       filter((accessToken) => accessToken !== null),
       take(1),
-      switchMap((accessToken) => next(addHeaders(request, accessToken)))
+      switchMap((accessToken) => next(addHeaders(request, accessToken))),
     );
   }
 }

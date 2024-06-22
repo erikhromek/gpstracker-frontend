@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -8,33 +8,32 @@ import { AlertType } from '../models/alert-type';
   providedIn: 'root',
 })
 export class AlertTypeService {
-  apiUrl = `${environment.apiUrl}`;
+  private readonly apiUrl = `${environment.apiUrl}`;
+  private httpClient = inject(HttpClient);
 
-  constructor(private httpClient: HttpClient) {}
-
-  getAlertTypes(): Observable<AlertType[]> {
+  public getAlertTypes(): Observable<AlertType[]> {
     return this.httpClient.get<AlertType[]>(`${this.apiUrl}/alert-types/`);
   }
 
-  getAlertType(id: number): Observable<AlertType> {
+  public getAlertType(id: number): Observable<AlertType> {
     return this.httpClient.get<AlertType>(`${this.apiUrl}/alert-types/${id}/`);
   }
 
-  createAlertType(alertType: AlertType): Observable<AlertType> {
+  public createAlertType(alertType: AlertType): Observable<AlertType> {
     return this.httpClient.post<AlertType>(
       `${this.apiUrl}/alert-types/`,
-      alertType
+      alertType,
     );
   }
 
-  updateAlertType(alertType: AlertType): Observable<AlertType> {
+  public updateAlertType(alertType: AlertType): Observable<AlertType> {
     return this.httpClient.patch<AlertType>(
       `${this.apiUrl}/alert-types/${alertType.id}/`,
-      alertType
+      alertType,
     );
   }
 
-  deleteAlertType(id: number): Observable<void> {
+  public deleteAlertType(id: number): Observable<void> {
     return this.httpClient.delete<void>(`${this.apiUrl}/alert-types/${id}/`);
   }
 }

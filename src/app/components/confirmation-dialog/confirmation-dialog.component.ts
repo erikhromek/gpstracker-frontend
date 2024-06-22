@@ -1,25 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogTitle, MatDialogContent, MatDialogClose, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-confirmation-dialog',
   standalone: true,
-  imports: [
-    MatButtonModule,
-    MatDialogTitle,
-    MatDialogContent,
-    CommonModule,
-    MatDialogClose],
+  imports: [MatButtonModule, CommonModule, MatDialogModule],
   templateUrl: './confirmation-dialog.component.html',
   styleUrl: './confirmation-dialog.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfirmationDialogComponent {
-
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public message: string,
-  ) {}
-
+  public readonly message: string = inject(MAT_DIALOG_DATA);
 }
