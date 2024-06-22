@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8000',
-  //apiUrl: 'https://gpstracker-app-7971a32bf19b.herokuapp.com',
+  //apiUrl: 'http://localhost:8000',
+  apiUrl: 'https://gpstracker-app-7971a32bf19b.herokuapp.com',
 };
 
 /*
