@@ -2,29 +2,41 @@ import {
   ChangeDetectionStrategy,
   Component,
   NgZone,
-  OnInit,
+  OnDestroy,
+  effect,
+  inject,
 } from '@angular/core';
-import * as L from 'leaflet';
 import { MatListModule } from '@angular/material/list';
-import { Observable, tap } from 'rxjs';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
-import { Icon, Marker, icon, latLng, marker, tileLayer } from 'leaflet';
+import { Icon, Map, Marker, icon, latLng, marker, tileLayer } from 'leaflet';
 import { CommonModule } from '@angular/common';
-import { AlertService } from '../../services/alert.service';
 import { Alert, AlertState } from '../../models/alert';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertAttendComponent } from '../../components/alert-attend/alert-attend.component';
+import { AlertsStore } from '../../stores/alert.store';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-map',
   standalone: true,
-  imports: [CommonModule, MatListModule, LeafletModule],
+  imports: [
+    CommonModule,
+    MatListModule,
+    LeafletModule,
+    MatButtonModule,
+    MatSnackBarModule,
+  ],
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MapComponent implements OnInit {
-  options = {
+export class MapComponent implements OnDestroy {
+  public readonly store = inject(AlertsStore);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly dialog = inject(MatDialog);
+  private readonly zone = inject(NgZone);
+  public readonly options = {
     layers: [
       tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 18,
@@ -34,76 +46,134 @@ export class MapComponent implements OnInit {
     zoom: 14,
     center: latLng(-34.92053826324929, -57.95286763580453),
   };
-  layers: Marker[] = [];
-  map!: L.Map;
-  alerts$!: Observable<Alert[]>;
-  alertStates = AlertState;
+  public layers: Marker[] = [];
+  private map!: Map;
+  public AlertState = AlertState;
+  private readonly iconUrlMarkerGrey = 'assets/images/marker-grey.png';
+  private readonly iconUrlMarkerRed = 'assets/images/marker-red.png';
+  private readonly iconUrlMarkerOrange = 'assets/images/marker-orange.png';
+  private readonly notificationSoundUrl = 'assets/sounds/sound-alert.mp3';
 
-  constructor(
-    private alertService: AlertService,
-    private dialog: MatDialog,
-    private zone: NgZone
-  ) {}
+  constructor() {
+    this.store.getAlerts();
+    this.store.connectToWebSocket();
+    let isLoaded = false;
 
-  ngOnInit(): void {
-    this.getAlerts();
+    effect(() => {
+      const createdAlert = this.store.createdEntity();
+
+      if (createdAlert) {
+        this.createMarker(createdAlert);
+        this.playNotificationSound();
+        this.map.setView([createdAlert.latitude, createdAlert.longitude]);
+        this.createSnackbar('Nueva alerta recibida');
+      }
+    });
+
+    effect(() => {
+      const updatedAlert = this.store.updatedEntity();
+
+      if (updatedAlert) {
+        this.updateMarker(updatedAlert);
+        const message =
+          updatedAlert.state === AlertState.C
+            ? 'Alerta cerrada'
+            : 'Alerta atendida';
+        this.createSnackbar(message);
+      }
+    });
+
+    effect(() => {
+      const alerts = this.store.sortedEntities();
+      const isPending = this.store.isPending();
+
+      if (isLoaded == false && isPending == false) {
+        isLoaded = true;
+        alerts.forEach((alert) => {
+          this.createMarker(alert);
+        });
+      }
+    });
   }
 
-  onMapReady(map: L.Map) {
+  ngOnDestroy(): void {
+    this.store.disconnectFromWebSocket();
+  }
+
+  public onMapReady(map: Map): void {
     this.map = map;
   }
 
-  private getAlerts(): void {
-    this.alerts$ = this.alertService.getAlerts().pipe(
-      tap((alerts: Alert[]) => {
-        if (alerts) {
-          this.assignMarkers(alerts);
-        }
-      })
-    );
+  public async createAlertsDummies(): Promise<void> {
+    await this.store.createAlertsDummies();
   }
 
-  private assignMarkers(alerts: Alert[]): void {
-    const iconUrlMarkerGrey = 'assets/images/marker-grey.png';
-    const iconUrlMarkerRed = 'assets/images/marker-red.png';
-    const iconUrlMarkerOrange = 'assets/images/marker-orange.png';
-    const notificationSoundUrl = 'assets/sounds/sound-alert.mp3';
+  private playNotificationSound(): void {
+    const audio = new Audio(this.notificationSoundUrl);
+    const promiseAudioPlay = audio.play();
 
-    alerts.forEach((alert) => {
-      let iconUrl =
-        alert.state === AlertState.N
-          ? iconUrlMarkerRed
-          : AlertState.A
-          ? iconUrlMarkerOrange
-          : iconUrlMarkerGrey;
+    if (promiseAudioPlay !== undefined) {
+      promiseAudioPlay
+        .then(() => {})
+        .catch(() => {
+          this.createSnackbar(
+            'Se requiere tener habilitada la reproducción automática de sonido para la recepción de alertas',
+          );
+        });
+    }
+  }
 
-      let alertMarker = marker([alert.latitude, alert.longitude], {
-        icon: icon({
-          ...Icon.Default.prototype.options,
-          iconUrl: iconUrl,
-          iconRetinaUrl: iconUrl,
-          shadowUrl: undefined,
-        }),
-      });
+  private createSnackbar(message: string): void {
+    this.snackBar.open(message, undefined, {
+      duration: 3000,
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
+      panelClass: 'snackbar-notification',
+    });
+  }
 
-      this.layers.push(alertMarker);
+  private getIconUrl(alert: Alert): Icon {
+    const iconUrl =
+      alert.state === AlertState.N
+        ? this.iconUrlMarkerRed
+        : alert.state === AlertState.A
+          ? this.iconUrlMarkerOrange
+          : this.iconUrlMarkerGrey;
 
-      alertMarker.on('click', () => {
-        this.zone.run(() => {
-          const dialogRef = this.dialog.open(AlertAttendComponent, {
-            data: alert,
-            width: '90vw',
-            maxWidth: '650px',
-          });
+    return icon({
+      ...Icon.Default.prototype.options,
+      iconUrl: iconUrl,
+      iconRetinaUrl: iconUrl,
+      shadowUrl: undefined,
+    });
+  }
+
+  private updateMarker(alert: Alert): void {
+    const marker = this.layers.find(
+      (marker) => marker.options.title === alert.id.toString(),
+    );
+    marker?.setIcon(this.getIconUrl(alert));
+  }
+
+  private createMarker(alert: Alert): void {
+    const alertMarker = marker([alert.latitude, alert.longitude], {
+      title: alert.id.toString(),
+      icon: this.getIconUrl(alert),
+    });
+
+    this.layers.push(alertMarker);
+
+    alertMarker.on('click', () => {
+      this.store.setSelectedEntity(alert.id);
+      const alertFromStore = this.store.selectedEntity();
+
+      this.zone.run(() => {
+        this.dialog.open(AlertAttendComponent, {
+          data: alertFromStore,
+          width: '90vw',
+          maxWidth: '650px',
         });
       });
-
-      setTimeout(() => {
-        const audio = new Audio(notificationSoundUrl);
-        audio.play();
-
-        this.map.setView([alerts[0].latitude, alerts[0].longitude]);
-      }, 1000);
     });
   }
 }

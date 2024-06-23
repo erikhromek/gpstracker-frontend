@@ -14,10 +14,9 @@
       </mat-card-header>
       <mat-card-content>
         <div class="inputs">
-          @if (errorMessages$ | async; as errorMessages) {
-            @if (errorMessages?.["detail"]) {}
+          @if (errorMessages() && errorMessages()["detail"]) {
             <div class="server-error">
-              {{ errorMessages?.["detail"] }}
+              {{ errorMessages()["detail"] }}
             </div>
           }
 

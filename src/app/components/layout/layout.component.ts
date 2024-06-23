@@ -36,14 +36,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LayoutComponent {
-  private destroyRef = inject(DestroyRef);
-
-  constructor(
-    private authService: AuthService,
-    private userService: UserService,
-    private router: Router,
-    private dialog: MatDialog
-  ) {}
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly authService = inject(AuthService);
+  private readonly userService = inject(UserService);
+  private readonly router = inject(Router);
+  private readonly dialog = inject(MatDialog);
 
   logout(): void {
     this.authService.logout();

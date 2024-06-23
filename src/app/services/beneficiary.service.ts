@@ -12,38 +12,37 @@ export class BeneficiaryService {
 
   constructor(private httpClient: HttpClient) {}
 
-  getBeneficiaries(): Observable<Beneficiary[]> {
+  public getBeneficiaries(): Observable<Beneficiary[]> {
     return this.httpClient.get<Beneficiary[]>(`${this.apiUrl}/beneficiaries/`);
   }
 
-  getBeneficiary(id: number): Observable<Beneficiary> {
+  public getBeneficiary(id: number): Observable<Beneficiary> {
     return this.httpClient.get<Beneficiary>(
       `${this.apiUrl}/beneficiaries/${id}/`,
     );
   }
 
-  createBeneficiary(beneficiary: Beneficiary): Observable<Beneficiary> {
+  public createBeneficiary(beneficiary: Beneficiary): Observable<Beneficiary> {
     return this.httpClient.post<Beneficiary>(
       `${this.apiUrl}/beneficiaries/`,
       beneficiary,
     );
   }
 
-  updateBeneficiary(beneficiary: Beneficiary): Observable<Beneficiary> {
+  public updateBeneficiary(beneficiary: Beneficiary): Observable<Beneficiary> {
     return this.httpClient.patch<Beneficiary>(
       `${this.apiUrl}/beneficiaries/${beneficiary.id}/`,
       beneficiary,
     );
   }
 
-  disableBeneficiary(id: number): Observable<void> {
-    return this.httpClient.delete<void>(`${this.apiUrl}/beneficiaries/${id}/`);
-  }
-
-  enableBeneficiary(id: number): Observable<Beneficiary> {
+  public toggleBeneficiary(
+    id: number,
+    enabled: boolean,
+  ): Observable<Beneficiary> {
     return this.httpClient.patch<Beneficiary>(
       `${this.apiUrl}/beneficiaries/${id}/`,
-      { enabled: true },
+      { enabled },
     );
   }
 }

@@ -3,6 +3,7 @@ import {
   Component,
   DestroyRef,
   inject,
+  signal,
 } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import {
@@ -17,12 +18,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { BehaviorSubject, EMPTY, catchError, timer } from 'rxjs';
 import { ServerError } from '../../models/server-error';
 import { RegisterUser } from '../../models/register-user';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { handleFormErrors } from '../../misc/handle-form-errors';
 
 @Component({
   selector: 'app-register',
@@ -44,8 +46,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegisterComponent {
-  private destroyRef = inject(DestroyRef);
-  registerForm = this.fb.group({
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly authService = inject(AuthService);
+  private readonly fb = inject(FormBuilder);
+  private readonly router = inject(Router);
+  public registerForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     name: ['', [Validators.required]],
     surname: ['', [Validators.required]],
@@ -53,37 +58,32 @@ export class RegisterComponent {
     password2: ['', Validators.required],
     organizationName: ['', Validators.required],
   });
-  errorMessages$ = new BehaviorSubject<ServerError>({});
-  isSuccess$: BehaviorSubject<Boolean> = new BehaviorSubject<Boolean>(false);
-
-  constructor(
-    private authService: AuthService,
-    private fb: FormBuilder,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {}
+  public isSuccess$: BehaviorSubject<Boolean> = new BehaviorSubject<Boolean>(
+    false,
+  );
+  public errorMessages = signal<ServerError>({});
 
   ngOnInit() {
     this.checkSession();
   }
 
-  get email() {
+  public get email() {
     return this.registerForm.get('email');
   }
 
-  get password() {
+  public get password() {
     return this.registerForm.get('password');
   }
 
-  get password2() {
+  public get password2() {
     return this.registerForm.get('password2');
   }
 
-  get name() {
+  public get name() {
     return this.registerForm.get('name');
   }
 
-  get surname() {
+  public get surname() {
     return this.registerForm.get('surname');
   }
 
@@ -91,17 +91,17 @@ export class RegisterComponent {
     return this.registerForm.get('organizationName');
   }
 
-  submit() {
+  public submit() {
     if (this.registerForm.valid) {
-      this.errorMessages$.next({});
+      this.errorMessages.set({});
       this.authService
         .register(this.registerForm.value as RegisterUser)
         .pipe(
           takeUntilDestroyed(this.destroyRef),
           catchError((error: HttpErrorResponse) => {
-            this.handleErrors(error);
+            handleFormErrors(this.registerForm, error, this.errorMessages);
             return EMPTY;
-          })
+          }),
         )
         .subscribe(() => {
           this.isSuccess$.next(true);
@@ -115,25 +115,7 @@ export class RegisterComponent {
     }
   }
 
-  handleErrors(error: HttpErrorResponse): void {
-    this.registerForm.setErrors({ invalid: true });
-    if (error.error) {
-      this.errorMessages$.next(error.error as ServerError);
-
-      Object.keys(this.errorMessages$.value).forEach((key) => {
-        const control = this.registerForm.get(key);
-        if (control) {
-          control.setErrors({ serverError: this.errorMessages$.value[key] });
-          control.markAsTouched();
-          control.markAsDirty();
-        }
-      });
-    } else {
-      this.errorMessages$.next({ detail: 'Ha ocurrido un error inesperado' });
-    }
-  }
-
-  checkSession(): void {
+  private checkSession(): void {
     this.authService.isLoggedIn() ? this.router.navigateByUrl('/map') : false;
   }
 }

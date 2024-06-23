@@ -1,22 +1,25 @@
 :host {
-    display: flex;
-    flex: 1;
-  }
-  
-  .alert-types-container {
-    width: 100%;
-  }
-  
-  .center {
-    display: flex;
-    justify-content: center;
-  }
+  display: flex;
+  flex: 1;
+}
 
-  .empty-data {
-    padding: 10px;
-    font-weight: bold;
-  }
-  
-  .new-item {
-    padding: 10px 0px;
-  }
+.alert-types-container {
+  width: 100%;
+}
+
+.empty-data {
+  padding: 10px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.new-item {
+  padding: 10px 0px;
+}
+
+.table-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 25px;
+}
