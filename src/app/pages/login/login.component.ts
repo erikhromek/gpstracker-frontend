@@ -1,11 +1,9 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   inject,
   signal,
 } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
 import {
   FormBuilder,
   FormsModule,
@@ -13,18 +11,17 @@ import {
   Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthUser } from '../../models/auth-user';
 import { ServerError } from '../../models/server-error';
-import { EMPTY, catchError } from 'rxjs';
 import { NgOptimizedImage } from '@angular/common';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { handleFormErrors } from '../../misc/handle-form-errors';
+import { AuthStore } from '../../stores/auth.store';
 
 @Component({
   selector: 'app-login',
@@ -39,14 +36,14 @@ import { handleFormErrors } from '../../misc/handle-form-errors';
     RouterLink,
     ReactiveFormsModule,
     NgOptimizedImage,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly authService = inject(AuthService);
+  public readonly store = inject(AuthStore);
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -69,26 +66,23 @@ export class LoginComponent {
   }
 
   private checkSession(): void {
-    this.authService.isLoggedIn() ? this.router.navigateByUrl('/map') : false;
+    this.store.isLoggedIn() ? this.router.navigateByUrl('/map') : false;
   }
 
-  public submit(): void {
+  public async submit(): Promise<void> {
     if (this.loginForm.valid) {
       this.errorMessages.set({});
-      this.authService
-        .login(this.loginForm.value as AuthUser)
-        .pipe(
-          takeUntilDestroyed(this.destroyRef),
-          catchError((error: HttpErrorResponse) => {
-            handleFormErrors(this.loginForm, error, this.errorMessages);
-            return EMPTY;
-          }),
-        )
-        .subscribe(() => {
-          const returnUrl =
-            this.route.snapshot.queryParams['returnUrl'] || '/map';
-          this.router.navigateByUrl(returnUrl);
-        });
+
+      await this.store.login(this.loginForm.value as AuthUser);
+
+      const httpError = this.store.error();
+      if (httpError) {
+        handleFormErrors(this.loginForm, httpError, this.errorMessages);
+      } else {
+        const returnUrl =
+          this.route.snapshot.queryParams['returnUrl'] || '/map';
+        this.router.navigateByUrl(returnUrl);
+      }
     }
   }
 }

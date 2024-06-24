@@ -13,11 +13,7 @@ export class AuthService {
   private readonly httpClient = inject(HttpClient);
 
   public login(user: AuthUser): Observable<AuthToken> {
-    return this.httpClient.post<AuthToken>(`${this.apiUrl}/token/`, user).pipe(
-      tap((authToken: AuthToken) => {
-        this.setSession(authToken);
-      }),
-    );
+    return this.httpClient.post<AuthToken>(`${this.apiUrl}/token/`, user);
   }
 
   public register(user: RegisterUser): Observable<CreatedUser> {
@@ -27,37 +23,13 @@ export class AuthService {
     );
   }
 
-  private setSession(authToken: AuthToken): void {
-    localStorage.setItem('access', authToken.access);
-    localStorage.setItem('refresh', authToken.refresh);
-  }
-
-  public isLoggedIn(): boolean {
-    return localStorage.getItem('access') ? true : false;
-  }
-
-  public logout(): void {
-    localStorage.removeItem('access');
-    localStorage.removeItem('refresh');
-  }
-
   public refreshToken(): Observable<AuthToken> {
-    return this.httpClient
-      .post<AuthToken>(`${this.apiUrl}/token/refresh/`, {
-        refresh: this.getRefreshToken(),
-      })
-      .pipe(
-        tap((authToken: AuthToken) => {
-          this.setSession(authToken);
-        }),
-      );
+    return this.httpClient.post<AuthToken>(`${this.apiUrl}/token/refresh/`, {
+      refresh: this.getRefreshToken(),
+    });
   }
 
-  public getRefreshToken(): string | null {
+  private getRefreshToken(): string | null {
     return localStorage.getItem('refresh');
-  }
-
-  public getAccessToken(): string | null {
-    return localStorage.getItem('access');
   }
 }

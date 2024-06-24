@@ -25,7 +25,7 @@ export class WebSocketService {
     this.messages$ = new Subject<MessageEvent>();
   }
 
-  public auth(): Observable<AuthWebSocket> {
+  private auth(): Observable<AuthWebSocket> {
     return this.httpClient.get<AuthWebSocket>(`${this.apiUrl}/ws/auth/`);
   }
 

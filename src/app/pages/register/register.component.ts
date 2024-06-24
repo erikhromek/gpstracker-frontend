@@ -5,7 +5,6 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
 import {
   FormBuilder,
   FormsModule,
@@ -13,18 +12,18 @@ import {
   Validators,
 } from '@angular/forms';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Router, RouterLink } from '@angular/router';
-import { BehaviorSubject, EMPTY, catchError, timer } from 'rxjs';
+import { timer } from 'rxjs';
 import { ServerError } from '../../models/server-error';
 import { RegisterUser } from '../../models/register-user';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { handleFormErrors } from '../../misc/handle-form-errors';
+import { AuthStore } from '../../stores/auth.store';
 
 @Component({
   selector: 'app-register',
@@ -47,7 +46,7 @@ import { handleFormErrors } from '../../misc/handle-form-errors';
 })
 export class RegisterComponent {
   private readonly destroyRef = inject(DestroyRef);
-  private readonly authService = inject(AuthService);
+  public readonly store = inject(AuthStore);
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
   public registerForm = this.fb.group({
@@ -58,9 +57,6 @@ export class RegisterComponent {
     password2: ['', Validators.required],
     organizationName: ['', Validators.required],
   });
-  public isSuccess$: BehaviorSubject<Boolean> = new BehaviorSubject<Boolean>(
-    false,
-  );
   public errorMessages = signal<ServerError>({});
 
   ngOnInit() {
@@ -91,31 +87,26 @@ export class RegisterComponent {
     return this.registerForm.get('organizationName');
   }
 
-  public submit() {
-    if (this.registerForm.valid) {
-      this.errorMessages.set({});
-      this.authService
-        .register(this.registerForm.value as RegisterUser)
-        .pipe(
-          takeUntilDestroyed(this.destroyRef),
-          catchError((error: HttpErrorResponse) => {
-            handleFormErrors(this.registerForm, error, this.errorMessages);
-            return EMPTY;
-          }),
-        )
-        .subscribe(() => {
-          this.isSuccess$.next(true);
-
-          const source = timer(3000);
-          const returnUrl = '/login';
-          source
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe(() => this.router.navigateByUrl(returnUrl));
-        });
-    }
+  private checkSession(): void {
+    this.store.isLoggedIn() ? this.router.navigateByUrl('/map') : false;
   }
 
-  private checkSession(): void {
-    this.authService.isLoggedIn() ? this.router.navigateByUrl('/map') : false;
+  public async submit() {
+    if (this.registerForm.valid) {
+      this.errorMessages.set({});
+
+      await this.store.register(this.registerForm.value as RegisterUser);
+
+      const httpError = this.store.error();
+      if (httpError) {
+        handleFormErrors(this.registerForm, httpError, this.errorMessages);
+      } else {
+        const source = timer(3000);
+        const returnUrl = '/login';
+        source
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe(() => this.router.navigateByUrl(returnUrl));
+      }
+    }
   }
 }

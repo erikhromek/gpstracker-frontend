@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  DestroyRef,
-  inject,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -11,12 +6,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { MatListModule } from '@angular/material/list';
 import { NgOptimizedImage } from '@angular/common';
-import { AuthService } from '../../services/auth.service';
-import { UserService } from '../../services/user.service';
-import { User } from '../../models/user';
 import { MatDialog } from '@angular/material/dialog';
 import { ProfileComponent } from '../profile/profile.component';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { UsersStore } from '../../stores/user.store';
+import { AuthStore } from '../../stores/auth.store';
 
 @Component({
   selector: 'app-layout',
@@ -36,27 +29,22 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LayoutComponent {
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly authService = inject(AuthService);
-  private readonly userService = inject(UserService);
+  private readonly userStore = inject(UsersStore);
+  private readonly authStore = inject(AuthStore);
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
 
   logout(): void {
-    this.authService.logout();
+    this.authStore.logout();
     this.router.navigateByUrl('/login');
   }
 
   openProfile(): void {
-    this.userService
-      .getProfile()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((user: User) => {
-        this.dialog.open(ProfileComponent, {
-          data: user,
-          width: '90vw',
-          maxWidth: '650px',
-        });
-      });
+    const user = this.userStore.selectedEntity();
+    this.dialog.open(ProfileComponent, {
+      data: user,
+      width: '90vw',
+      maxWidth: '650px',
+    });
   }
 }

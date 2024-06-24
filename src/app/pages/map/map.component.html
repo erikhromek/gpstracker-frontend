@@ -3,11 +3,13 @@
     <div mat-subheader>Últimas alertas</div>
     <mat-divider></mat-divider>
 
-    <mat-list-item role="listitem">
-      <button mat-flat-button (click)="createAlertsDummies()">
-        Crear alertas dummy
-      </button>
-    </mat-list-item>
+    @if (!isProduction()) {
+      <mat-list-item role="listitem">
+        <button mat-flat-button (click)="createAlertsDummies()">
+          Crear alertas dummy
+        </button>
+      </mat-list-item>
+    }
     @for (alert of store.sortedEntities(); track alert.id; let e = $even) {
       <mat-list-item role="listitem">
         <span matListItemTitle>
