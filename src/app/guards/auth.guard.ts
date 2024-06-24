@@ -4,15 +4,15 @@ import {
   RouterStateSnapshot,
 } from '@angular/router';
 import { inject } from '@angular/core';
-import { AuthStore } from '../stores/auth.store';
+import { AuthService } from '../services/auth.service';
 
 export const authGuard = (
   route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot,
 ) => {
   const router = inject(Router);
-  const store = inject(AuthStore);
-  const isLoggedIn = store.isLoggedIn();
+  const authService = inject(AuthService);
+  const isLoggedIn = authService.isLoggedIn();
   return isLoggedIn
     ? true
     : router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
