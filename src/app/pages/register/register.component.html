@@ -186,14 +186,18 @@
                 mat-flat-button
                 color="primary"
                 type="submit"
-                [disabled]="!registerForm.valid"
+                [disabled]="!registerForm.valid && store.isPending()"
               >
-                Registro
+                @if (store.isPending()) {
+                  <mat-spinner color="accent" [diameter]="20"></mat-spinner>
+                } @else {
+                  Registro
+                }
               </button>
             </div>
           </form>
         </div>
-        @if ((isSuccess$ | async) === true) {
+        @if (store.isFulfilled() && registerForm.valid) {
           <div class="center">
             <div class="server-success">
               Su registro ha sido completado. Será redirigido a la sección de
@@ -205,10 +209,20 @@
           </div>
         }
         <div class="extra-buttons">
-          <a mat-button [routerLink]="['/reset-password']"
-            >Olvidé mi contraseña</a
+          <a
+            mat-button
+            [routerLink]="['/reset-password']"
+            [disabled]="store.isPending()"
           >
-          <a mat-button [routerLink]="['/login']">Ingreso</a>
+            Olvidé mi contraseña
+          </a>
+          <a
+            mat-button
+            [routerLink]="['/login']"
+            [disabled]="store.isPending()"
+          >
+            Ingreso
+          </a>
         </div>
       </mat-card-content>
     </mat-card>

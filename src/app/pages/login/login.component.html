@@ -85,18 +85,32 @@
                 mat-flat-button
                 color="primary"
                 type="submit"
-                [disabled]="!loginForm.valid"
+                [disabled]="!loginForm.valid && store.isPending()"
               >
-                Ingresar
+                @if (store.isPending()) {
+                  <mat-spinner color="accent" [diameter]="20"></mat-spinner>
+                } @else {
+                  Ingresar
+                }
               </button>
             </div>
           </form>
         </div>
         <div class="extra-buttons">
-          <a mat-button [routerLink]="['/reset-password']"
-            >Olvidé mi contraseña</a
+          <a
+            mat-button
+            [routerLink]="['/reset-password']"
+            [disabled]="store.isPending()"
           >
-          <a mat-button [routerLink]="['/register']">Registro</a>
+            Olvidé mi contraseña
+          </a>
+          <a
+            mat-button
+            [routerLink]="['/register']"
+            [disabled]="store.isPending()"
+          >
+            Registro
+          </a>
         </div>
       </mat-card-content>
     </mat-card>

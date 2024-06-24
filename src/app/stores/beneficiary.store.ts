@@ -1,13 +1,6 @@
 import { inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import {
-  patchState,
-  signalStore,
-  withMethods,
-  withHooks,
-  withComputed,
-  withState,
-} from '@ngrx/signals';
+import { patchState, signalStore, withMethods, withHooks } from '@ngrx/signals';
 import { Beneficiary } from '../models/beneficiary';
 import { BeneficiaryService } from '../services/beneficiary.service';
 import {
@@ -27,7 +20,6 @@ import { withSelectedEntity } from '../features/selected-entity.feature';
 
 export const BeneficiariesStore = signalStore(
   { providedIn: 'root' },
-  withState({ query: '' }),
   withEntities<Beneficiary>(),
   withSelectedEntity(),
   withRequestStatus(),

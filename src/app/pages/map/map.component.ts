@@ -1,10 +1,10 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  NgZone,
   OnDestroy,
   effect,
   inject,
+  signal,
 } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
@@ -16,6 +16,7 @@ import { AlertAttendComponent } from '../../components/alert-attend/alert-attend
 import { AlertsStore } from '../../stores/alert.store';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-map',
@@ -33,9 +34,9 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 })
 export class MapComponent implements OnDestroy {
   public readonly store = inject(AlertsStore);
+  public readonly isProduction = signal(environment.production);
   private readonly snackBar = inject(MatSnackBar);
   private readonly dialog = inject(MatDialog);
-  private readonly zone = inject(NgZone);
   public readonly options = {
     layers: [
       tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -167,12 +168,10 @@ export class MapComponent implements OnDestroy {
       this.store.setSelectedEntity(alert.id);
       const alertFromStore = this.store.selectedEntity();
 
-      this.zone.run(() => {
-        this.dialog.open(AlertAttendComponent, {
-          data: alertFromStore,
-          width: '90vw',
-          maxWidth: '650px',
-        });
+      this.dialog.open(AlertAttendComponent, {
+        data: alertFromStore,
+        width: '90vw',
+        maxWidth: '650px',
       });
     });
   }
