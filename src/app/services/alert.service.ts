@@ -15,6 +15,10 @@ export class AlertService {
     return this.httpClient.get<Alert[]>(`${this.apiUrl}/alerts/`);
   }
 
+  public getAlertsSummary(): Observable<Alert[]> {
+    return this.httpClient.get<Alert[]>(`${this.apiUrl}/alerts-summary/`);
+  }
+
   public getAlertsWithErrors(error: number): Observable<Alert[]> {
     return this.httpClient.get<Alert[]>(
       `${this.apiUrl}/dummy-error/?error=${error}`,

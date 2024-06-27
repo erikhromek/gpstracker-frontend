@@ -26,8 +26,9 @@
 }
 
 .dot-grey,
-.dot-green,
-.dot-orange {
+.dot-red,
+.dot-orange,
+.dot-green {
   height: 12px;
   width: 12px;
   border-radius: 50%;
@@ -44,4 +45,20 @@
 
 .dot-orange {
   background-color: orange;
+}
+
+.dot-green {
+  background-color: green;
+}
+
+.connection-status {
+  z-index: 999;
+  position: absolute;
+  right: 0;
+  background: azure;
+  padding: 10px;
+}
+
+.connection-title {
+  margin: 0 auto;
 }

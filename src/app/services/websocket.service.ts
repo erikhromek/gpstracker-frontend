@@ -3,7 +3,6 @@ import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject, firstValueFrom, switchMap, timer } from 'rxjs';
 import { AuthWebSocket } from '../models/auth-websocket';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { UsersStore } from '../stores/user.store';
 
 @Injectable({
@@ -12,17 +11,18 @@ import { UsersStore } from '../stores/user.store';
 export class WebSocketService {
   private readonly apiUrl = `${environment.apiUrl}`;
   private readonly httpClient = inject(HttpClient);
-  private readonly snackBar = inject(MatSnackBar);
   private readonly store = inject(UsersStore);
   private organizationId: number | undefined;
   private uuid!: string;
   private webSocket!: WebSocket;
   private messages$!: Subject<MessageEvent>;
+  private connectionStatus$!: Subject<boolean>;
   private reconnectionAttempts = 0;
   private manualDisconnection = false;
 
   constructor() {
     this.messages$ = new Subject<MessageEvent>();
+    this.connectionStatus$ = new Subject<boolean>();
   }
 
   private auth(): Observable<AuthWebSocket> {
@@ -50,7 +50,7 @@ export class WebSocketService {
     this.webSocket = new WebSocket(webSocketUrl);
 
     this.webSocket.onopen = () => {
-      this.createSnackbar('Conexión establecida');
+      this.connectionStatus$.next(true);
       this.reconnectionAttempts = 0;
     };
 
@@ -63,8 +63,8 @@ export class WebSocketService {
     };
 
     this.webSocket.onclose = () => {
+      this.connectionStatus$.next(false);
       if (!this.manualDisconnection) {
-        this.createSnackbar('Error estableciendo conexión');
         this.reconnect();
       }
     };
@@ -103,20 +103,15 @@ export class WebSocketService {
     return this.messages$.asObservable();
   }
 
+  public getConnectionStatus(): Observable<boolean> {
+    return this.connectionStatus$.asObservable();
+  }
+
   public sendMessage(message: string): void {
     if (this.webSocket && this.webSocket.readyState === WebSocket.OPEN) {
       this.webSocket.send(message);
     } else {
       console.error('Cannot send message. WebSocket is not open.');
     }
-  }
-
-  private createSnackbar(message: string): void {
-    this.snackBar.open(message, undefined, {
-      duration: 3000,
-      horizontalPosition: 'end',
-      verticalPosition: 'top',
-      panelClass: 'snackbar-notification',
-    });
   }
 }
