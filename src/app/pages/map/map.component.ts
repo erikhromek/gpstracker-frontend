@@ -56,7 +56,12 @@ export class MapComponent implements OnDestroy {
   private readonly notificationSoundUrl = 'assets/sounds/sound-alert.mp3';
 
   constructor() {
-    this.store.getAlerts();
+    if (!this.isProduction()) {
+      this.store.getAlerts();
+    } else {
+      this.store.getAlertsSummary();
+    }
+
     this.store.connectToWebSocket();
     let isLoaded = false;
 

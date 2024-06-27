@@ -66,6 +66,18 @@ export const AlertsStore = signalStore(
         }
       },
 
+      async getAlertsSummary(): Promise<void> {
+        patchState(store, setPending());
+
+        try {
+          const alerts = await firstValueFrom(alertService.getAlertsSummary());
+
+          patchState(store, setAllEntities(alerts), setFulfilled());
+        } catch (error) {
+          patchState(store, setError(error as HttpErrorResponse));
+        }
+      },
+
       async connectToWebSocket(): Promise<void> {
         try {
           webSocketService.connect();
