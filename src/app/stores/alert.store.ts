@@ -25,6 +25,11 @@ import { withSelectedEntity } from '../features/selected-entity.feature';
 import { withCreatedEntity } from '../features/created-entity.feature';
 import { withUpdatedEntity } from '../features/updated-entity.feature';
 import { WebSocketService } from '../services/websocket.service';
+import {
+  setConnected,
+  setDisconnected,
+  withWebSocketStatus,
+} from '../features/websocket-status.feature';
 
 export const AlertsStore = signalStore(
   { providedIn: 'root' },
@@ -33,6 +38,7 @@ export const AlertsStore = signalStore(
   withCreatedEntity(),
   withUpdatedEntity(),
   withRequestStatus(),
+  withWebSocketStatus(),
   withComputed(({ entities }) => ({
     sortedEntities: computed(() => {
       return entities().toSorted((a, b) =>
@@ -71,8 +77,19 @@ export const AlertsStore = signalStore(
               });
             },
           });
+
+          webSocketService.getConnectionStatus().subscribe({
+            next: (isConnected) => {
+              if (isConnected) {
+                patchState(store, setConnected());
+              } else {
+                patchState(store, setDisconnected());
+              }
+            },
+          });
         } catch (error) {
           patchState(store, setError(error as HttpErrorResponse));
+          patchState(store, setDisconnected());
         }
       },
 

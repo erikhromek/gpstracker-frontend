@@ -83,6 +83,7 @@ export class AlertsComponent {
 
     effect(() => {
       this.dataSource.data = this.store.entities();
+      this.map.invalidateSize();
     });
   }
 

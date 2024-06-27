@@ -94,6 +94,8 @@ export class MapComponent implements OnDestroy {
           this.createMarker(alert);
         });
       }
+
+      this.map.invalidateSize();
     });
   }
 

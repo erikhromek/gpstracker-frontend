@@ -48,6 +48,16 @@
       (leafletMapReady)="onMapReady($event)"
       [leafletOptions]="options"
       [leafletLayers]="layers"
-    ></div>
+    >
+      <div class="connection-status">
+        <h2 class="connection-title">
+          @if (store.isConnected()) {
+            <span class="dot-green"></span> Conectado
+          } @else {
+            <span class="dot-red"></span> Desconectado
+          }
+        </h2>
+      </div>
+    </div>
   </div>
 </div>
